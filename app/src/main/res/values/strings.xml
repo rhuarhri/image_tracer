@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">image tracer</string>
+    <string name="title_activity_camera_tracer">CameraTracerActivity</string>
+</resources>

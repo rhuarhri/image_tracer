@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="help_popup_title">Help</string>
+
+    <string name="full_screen_ad_popup_title">AD</string>
+
+    <string name="tracing_choice_popup_title">Trace Image with?</string>
+
+    <string name="tracing_choice_popup_help">Screen. In this option you place a piece of paper on
+        the screen of the device. The light from the screen will allow you to see the image
+        through the paper. \nCamera. In this option the image is on top of the view from the
+        device’s camera. The camera view will allow you to see the paper with the image on top when using the app.
+    </string>
+
+</resources>

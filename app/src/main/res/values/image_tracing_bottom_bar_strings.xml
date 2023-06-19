@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="image_tracing_bar_resize_item_title">Allow pinch to zoom gesture.</string>
+
+    <string name="image_tracing_bar_invert_item_title">Invert</string>
+
+    <string name="image_tracing_bar_colour_item_red">Red</string>
+    <string name="image_tracing_bar_colour_item_green">Green</string>
+    <string name="image_tracing_bar_colour_item_blue">Blue</string>
+
+    <string name="image_tracing_bar_transparency_item_title">Set Image transparency to %1s</string>
+
+    <string name="image_tracing_bar_contrast_item_title">Contrast</string>
+
+    <string name="image_tracing_bar_brightness_item_title">Brightness</string>
+
+    <string name="image_tracing_bar_shadows_item_title">Shadows</string>
+
+    <string name="image_tracing_bar_monochrome_item_title">Monochrome</string>
+
+    <string name="image_tracing_bar_reset_item_title">Reset</string>
+
+    <string name="image_tracing_bar_bar_slider_title">%1s is at %2s</string>
+    
+</resources>

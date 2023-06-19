@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name = "start_button_content_description">Start</string>
+    <string name = "continue_button_content_description">Continue</string>
+    <string name = "help_button_content_description">Help</string>
+
+    <string name="ad_count_title">%1s out of 5</string>
+    <string name="ad_card_message">
+        You are required to watch an ad for every 5 uses. This helps fund future development work
+        and new features.
+    </string>
+    <string name="watch_ad_button">Watch Ad</string>
+
+    <string name="no_connection_warning_popup_title">No connection</string>
+    <string name="no_connection_warning_popup_message">In order to watch an ad you must be connected to the internet.</string>
+
+    <string name="can_not_trace_warning_popup_title">This app is ad supported</string>
+    <string name="can_not_trace_warning_popup_message">In order to use this app you must view a ad
+        once in a while.
+    </string>
+
+    <string name="no_continue_warning_title">No saved images.</string>
+    <string name="no_continue_warning_message">Press the start button to trace an image. \nThe
+        last image you have traced is automatically saved. However, there are no saved images.</string>
+</resources>

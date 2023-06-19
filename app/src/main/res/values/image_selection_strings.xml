@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="image_selection_tool_bar_name">Image Selection</string>
+
+    <string name="image_selection_no_image_selected_warning_title">No image selected.</string>
+    <string name="image_selection_no_image_selected_warning_message">Please selected an image using 1 of the options at the bottom of the screen.</string>
+
+    <string name="image_selection_internet_error_title">Unable to get image from URL.</string>
+    <string name="image_selection_internet_error_message">Double check that the URL is correct
+        and the device is connected to the internet.</string>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="image_selection_storage_option">"Gallery"</string>
+    <string name="image_selection_storage_help">When the gallery button is pressed. It will allow you to select an image stored within your device.</string>
+
+    <string name="image_selection_camera_option">Camera</string>
+    <string name="image_selection_camera_help">When the camera button is pressed. It will shows you
+        the camera view from which you can take a picture.</string>
+
+    <string name="image_selection_internet_option">Internet</string>
+    <string name="image_selection_internet_help">To get an image from the internet. \nStep 1 copy
+        the URL (i.e. www.google.com) of the image. /nStep 2 past it into the search box. /nStep 3
+        press the search button. /nIf it does not work double check that the URL is correct, and
+        that the device is connected to the internet.</string>
+
+    <string name="image_selection_sample_option">Sample</string>
+    <string name="image_selection_sample_help">You should see a row of images. Swipe through to find an image that you like and press it.</string>
+
+
+
+    <string name="image_tracing_reset_option">Reset</string>
+    <string name="image_tracing_reset_help">When the reset button to pressed. It will undo all changes made to the image.</string>
+
+    <string name="image_tracing_resize_option">Resize</string>
+    <string name="image_tracing_resize_help">When the resize, switch is pressed. It will enable or disable the gestures for rotation, resizing and movement. If the switch is on these gestures are enabled. If the switch is off the image is locked in place.</string>
+
+    <string name="image_tracing_invert_option">Invert</string>
+    <string name="image_tracing_invert_help">When the invert colour button is pressed. It will switch the colours in the image to their opposite. For example, white becomes black. This would help make it easier to identify different colours.</string>
+
+    <string name="image_tracing_colour_option">Colour</string>
+    <string name="image_tracing_colour_help">When one of the colour bars are moved. Some of the colours will be removed. For example, if all bars are at 0 then all colours apart from black will be removed. This would help by allowing you to draw the image one colour at a time.</string>
+
+    <string name="image_tracing_transparency_option">Transparency</string>
+    <string name="image_tracing_transparency_help">When the transparency bar is moved. The image will fade into the background. If the bar is at 100 then the image will be completely visible, at 0 then the image will be invisible. This would help when tracing with the camera as you will be able to see what you are drawing through the image.</string>
+
+    <string name="image_tracing_contrast_option">Contrast</string>
+    <string name="image_tracing_contrast_help">When the contrast bar is moved. This will make the colours on image more distinguishable. When the brightness bar is moved. This will increase or decrease the brightness of the image.</string>
+
+    <string name="image_tracing_shadow_option">Shadows</string>
+    <string name="image_tracing_shadow_help">When the shadows bar is moved. This will highlight the darkness parts of the image. This would allow you focus on the shadows in the image.</string>
+
+    <string name="image_tracing_monochrome_option">Monochrome</string>
+    <string name="image_tracing_monochrome_help">When the monochrome button is pressed. All colour from the image is removed and replace with either black or white. This would help to make the image easier to view.</string>
+
+</resources>
