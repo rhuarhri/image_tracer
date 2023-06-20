@@ -13,9 +13,14 @@ class ImageSelectionViewModel @Inject constructor(
     private val repository: ImageSelectionRepository
 ) : ViewModel() {
 
-    fun saveImage(name : String, image : Bitmap) = viewModelScope.launch {
+    fun saveImage(image : Bitmap) = viewModelScope.launch {
         val outStream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-        repository.saveImage(name, outStream.toByteArray())
+
+        //save the new image
+        repository.saveImage(outStream.toByteArray())
+
+        //check for and delete any unnecessary images
+        repository.delete()
     }
 }

@@ -20,6 +20,7 @@ class MenuRepository @Inject constructor(private val adDao: AdDao, imageDao : Im
         ))
     }
 
+    /*Only the count is needed from the ad entity*/
     val adCount = adDao.getAd().map {
         it.map { ad ->
             ad.count

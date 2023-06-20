@@ -75,7 +75,11 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     private val _isMonochrome : MutableStateFlow<Boolean> = MutableStateFlow(DEFAULT_MONOCHROME)
     val isMonochrome : StateFlow<Boolean> = _isMonochrome
 
-    fun getImage() = viewModelScope.launch {
+    init {
+        getImage()
+    }
+
+    private fun getImage() = viewModelScope.launch {
         val image = repository.getImage()
 
         withContext(Dispatchers.Main) {

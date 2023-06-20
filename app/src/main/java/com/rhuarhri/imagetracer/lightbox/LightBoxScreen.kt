@@ -41,43 +41,18 @@ import com.rhuarhri.imagetracer.botton_bar.ImageTracingBottomBar
 import com.rhuarhri.imagetracer.botton_bar.ImageTracingBottomBarViewModel
 import com.rhuarhri.imagetracer.ui.theme.ImageTracerTheme
 
-/*
-TODO
- This screen will be designed to allow the user to trace an image by drawing on top of the screen.
- */
-
 class LightBoxScreen {
-
-
-    //private lateinit var viewModel : LightBoxViewModel
-    //private lateinit var rotateViewModel : RotatePopupViewModel
-    //private lateinit var resizeViewModel : ResizePopupViewModel
-    //private lateinit var transparencyViewModel: TransparencyPopupViewModel
-    //private lateinit var colourViewModel : ColourPopupViewModel
     
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Screen(controller : NavController) {
 
-        //viewModel = hiltViewModel()
-
         val barViewModel : ImageTracingBottomBarViewModel = hiltViewModel()
-
-        //rotateViewModel = viewModel()
-
-        //resizeViewModel = viewModel()
-
-        //transparencyViewModel = viewModel()
-
-        //colourViewModel = viewModel()
 
         var darkModeOn by remember {
             mutableStateOf(false)
         }
 
-        //var scale by remember { mutableStateOf(1f) }
-        //var rotation by remember { mutableStateOf(0f) }
-        //var offset by remember { mutableStateOf(Offset.Zero) }
         val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
             var scale = barViewModel.scale.value
             scale *= zoomChange
@@ -92,18 +67,8 @@ class LightBoxScreen {
             barViewModel.setOffset(offset)
         }
 
-        //var bottomBarIsVisibleState by remember { mutableStateOf(false) }
-
         val tracingImage by barViewModel.tracingBitmap.collectAsState()
 
-        /*viewModel.getImage().invokeOnCompletion {
-            viewModel.tracingImage.value?.let {
-                barViewModel.setTracingImage(it)
-            }
-        }*/
-
-        barViewModel.getImage()
-        
         ImageTracerTheme {
             // A surface container using the 'background' color from the theme
             Surface(
@@ -126,6 +91,11 @@ class LightBoxScreen {
                             Column() {
 
                                 Row(horizontalArrangement = Arrangement.Start) {
+                                    /*Tis is used to change the background colour of the screen.
+                                    The idea being if te user is tracing on the screen. Then they
+                                     can change the background between black and white. Depending
+                                      on which they find easier to draw on.
+                                     */
                                     IconToggleButton(checked = darkModeOn, onCheckedChange = {
                                         darkModeOn = !darkModeOn
                                     }) {
@@ -177,24 +147,6 @@ class LightBoxScreen {
                                     }
                                 }
                             }
-/*
-                            RotatePopup(onConfirm = {
-                                viewModel.setImageRotation(it)
-                            }, viewModel = rotateViewModel)
-
-                            ResizePopup(onConfirm = {
-                                viewModel.setImageSize(it)
-                            }, viewModel = resizeViewModel)
-
-                            TransparencyPopup(onConfirm = {
-                                viewModel.setTransparency(it)
-                            }, viewModel = transparencyViewModel)
-
-                            tracingImage?.let {
-                                ColourPopup(origin = it, onConfirm = { red, green, blue ->
-                                    viewModel.setImageColour(red, green, blue)
-                                }, viewModel = colourViewModel)
-                            }*/
                         }
                     },
                     floatingActionButton = {
@@ -224,30 +176,6 @@ class LightBoxScreen {
 
                         ImageTracingBottomBar().Bar(viewModel = barViewModel)
 
-                        /*if (bottomBarIsVisibleState) {
-                            BottomBar.Bar {
-                                when (it) {
-                                    Feature.Reset -> {
-                                        //viewModel.reset()
-                                    }
-                                    Feature.Rotate -> {
-                                        //rotateViewModel.show()
-                                    }
-                                    Feature.Resize -> {
-                                        //resizeViewModel.show()
-                                    }
-                                    Feature.ChangeColor -> {
-                                        //colourViewModel.show()
-                                    }
-                                    Feature.Transparency -> {
-                                        //transparencyViewModel.show()
-                                    }
-                                    Feature.Monochrome -> {
-                                        //viewModel.setMonochrome()
-                                    }
-                                }
-                            }
-                        }*/
                     }
                 )
             }

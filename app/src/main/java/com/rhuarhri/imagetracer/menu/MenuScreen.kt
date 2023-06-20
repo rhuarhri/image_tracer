@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.Button
@@ -52,7 +51,6 @@ import com.rhuarhri.imagetracer.popups.ad.FullScreenAdPopup
 import com.rhuarhri.imagetracer.popups.general.TracingChoicePopup
 import com.rhuarhri.imagetracer.ui.theme.ImageTracerTheme
 import com.rhuarhri.imagetracer.utils.ImageUtils
-import com.rhuarhri.imagetracer.utils.PermissionUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MenuScreen {
@@ -91,7 +89,7 @@ class MenuScreen {
                                             bitmap = bitmap.asImageBitmap(),
                                             contentDescription = "App icon",
                                             modifier = Modifier
-                                                .size(150.dp)
+                                                .size(80.dp)
                                                 .clip(RoundedCornerShape(16.dp))
                                                 .background(MaterialTheme.colorScheme.primary),
                                             contentScale = ContentScale.Fit
@@ -104,7 +102,7 @@ class MenuScreen {
                                         .padding(16.dp),
                                     horizontalArrangement = Arrangement.Center
                                 ) {
-                                    Text(stringResource(id = R.string.app_name), fontSize = 36.sp)
+                                    Text(stringResource(id = R.string.app_name), fontSize = 24.sp)
                                 }
 
                                 Menu(navController)
@@ -171,17 +169,17 @@ class MenuScreen {
 
                 val imagesExist by viewModel.imagesExist.collectAsState()
 
+                /*This checks if the user has used the app before to trace an image. If so then
+                they can simple press this button and continue from were they left off.
+                 */
                 if (imagesExist) {
                     if (showTracingChoicePopup) {
-                        val context = LocalContext.current
                         TracingChoicePopup(
                             onScreenTraceSelected = {
                                 navController.navigate(Route.LightBoxScreen.route)
                             },
                             onCameraTraceSelected = {
-                                if (PermissionUtils.hasCameraPermission(context)) {
-                                    navController.navigate(Route.CameraTraceScreen.route)
-                                }
+                                navController.navigate(Route.CameraTraceScreen.route)
                             },
                             onDismiss = {
                                 showTracingChoicePopup = false
@@ -204,18 +202,6 @@ class MenuScreen {
                 ) {
                     showTracingChoicePopup = true
                     showContinueWarningPopup = true
-                }
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-
-                MenuButton(
-                    icon = Icons.Default.Help,
-                    description = stringResource(id = R.string.help_button_content_description)
-                ) {
-
                 }
             }
 
@@ -248,7 +234,7 @@ class MenuScreen {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    fontSize = 36.sp,
+                    fontSize = 24.sp,
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.size(8.dp))
@@ -295,6 +281,9 @@ class MenuScreen {
                     }
 
                     Button(onClick = {
+                        /*This checks if the user has a connection to the internet to ensure that
+                         they can watch an ad.
+                         */
                         val connection = viewModel.checkConnection(context)
 
                         if (connection) {
@@ -307,14 +296,14 @@ class MenuScreen {
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
                             contentDescription = "watch ad",
-                            modifier = Modifier.size(40.dp),
+                            modifier = Modifier.size(30.dp),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             stringResource(id = R.string.watch_ad_button),
                             color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 24.sp
+                            fontSize = 18.sp
                         )
                     }
                 }
@@ -339,12 +328,12 @@ class MenuScreen {
     @Composable
     fun MenuButton(icon : ImageVector, description : String, onClick : () -> Unit) {
         Button(onClick = { onClick.invoke() },
-            modifier = Modifier.size(150.dp, 100.dp))
+            modifier = Modifier.size(90.dp, 60.dp))
         {
             Icon(
                 imageVector = icon,
                 contentDescription = description,
-                modifier = Modifier.size(60.dp, 60.dp)
+                modifier = Modifier.size(50.dp, 50.dp)
             )
         }
     }

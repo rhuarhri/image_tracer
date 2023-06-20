@@ -25,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -57,6 +58,9 @@ object ImageSelectionBottomBar {
             items = ImageSelectionOption.values() as Array<BottomBarItem>
         ) {
             when (it) {
+                /*When the extension is visible. The extension that will be displayed is chosen
+                here
+                 */
                 ImageSelectionOption.Storage -> {
                     StorageImages(viewModel)
                 }
@@ -72,7 +76,9 @@ object ImageSelectionBottomBar {
                 ImageSelectionOption.Sample -> {
                     SampleImages(viewModel)
                 }
-
+                ImageSelectionOption.History -> {
+                    HistoryImages(viewModel)
+                }
                 else -> {
 
                 }
@@ -83,14 +89,14 @@ object ImageSelectionBottomBar {
     @Composable
     fun StorageImages(viewModel: ImageSelectionBottomBarViewModel) {
 
+        /*This should show a the devices own image picker. So the user can choose from all of
+        there images.*/
+
         val context: Context = LocalContext.current
 
-        // Registers a photo picker activity launcher in single-select mode.
         val pickMedia = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickVisualMedia(),
             onResult = { uri ->
-                // Callback is invoked after the user selects a media item or closes the
-                // photo picker.
                 if (uri != null) {
                     viewModel.getFromStorage(context, uri)
                 } else {
@@ -117,7 +123,7 @@ object ImageSelectionBottomBar {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
-                    stringResource(id = R.string.image_selection_bar_storage_item_button_title), 
+                    stringResource(id = R.string.image_selection_bar_storage_item_button_title),
                     fontSize = 20.sp)
             }
 
@@ -133,6 +139,10 @@ object ImageSelectionBottomBar {
             Objects.requireNonNull(context),
             context.packageName + ".provider", file
         )
+
+        /*this should launch the devices camera app from which they can take a picture. It is
+        storage in a temp file.
+         */
 
         val cameraLauncher =
             rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
@@ -169,6 +179,8 @@ object ImageSelectionBottomBar {
     fun InternetImages(viewModel: ImageSelectionBottomBarViewModel) {
         var url by remember { mutableStateOf("") }
 
+        /*This allows the user to get an image from a url*/
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -193,13 +205,18 @@ object ImageSelectionBottomBar {
             }) {
                 Icon(
                     imageVector = Icons.Default.Search, contentDescription = "Search",
-                    modifier = Modifier.size(40.dp, 40.dp)
+                    modifier = Modifier.size(40.dp, 40.dp),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
             BottomBar.CloseExtensionButton(viewModel)
 
             val internetError by viewModel.showInternetError.collectAsState()
+
+            /*It is possible for errors to occur here. Mainly no internet or incorrect url
+            so if there is a problem this warning is shown.
+             */
 
             if (internetError) {
                 WarningPopup(
@@ -216,6 +233,12 @@ object ImageSelectionBottomBar {
 
     @Composable
     fun SampleImages(viewModel: ImageSelectionBottomBarViewModel) {
+
+        /*This will display a list of images. These images in the asset folder and are used as
+        example images that the user can choose from.
+        All sample image locations are in SAMPLE_IMAGES
+         */
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -234,10 +257,42 @@ object ImageSelectionBottomBar {
                             modifier = Modifier
                                 .padding(16.dp)
                                 .clickable {
-                                    viewModel.getFromSample(context, fileName)
+                                    viewModel.setSelectedBitmap(bitmap)
                                 }
                         )
                     }
+                }
+            }
+            BottomBar.CloseExtensionButton(viewModel)
+        }
+    }
+
+    @Composable
+    fun HistoryImages(viewModel: ImageSelectionBottomBarViewModel) {
+
+        /*this displays the first 10 images in the app image history
+        * The history contains the images that the user has traced in the past.*/
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val historyImages by viewModel.imageHistory.collectAsState()
+            LazyRow(modifier = Modifier.weight(1f, fill = true)) {
+                items(historyImages) {bitmap ->
+
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Selected image",
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .clickable {
+                                viewModel.setSelectedBitmap(bitmap)
+                            }
+                    )
+
                 }
             }
             BottomBar.CloseExtensionButton(viewModel)

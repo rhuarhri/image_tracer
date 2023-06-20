@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.rhuarhri.imagetracer.R
@@ -32,5 +33,11 @@ enum class ImageSelectionOption(
     Sample(
         R.string.image_selection_sample_option,
         Icons.Default.ImageSearch,
-        R.string.image_selection_sample_help)
+        R.string.image_selection_sample_help),
+
+    History(
+        R.string.image_selection_history_option,
+        Icons.Default.Restore,
+        R.string.image_selection_history_help
+    )
 }

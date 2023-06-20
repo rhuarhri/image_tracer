@@ -1,5 +1,8 @@
 package com.rhuarhri.imagetracer.values
 
+/*
+A list of sample image file names that are stored in the asset folder
+ */
 val SAMPLE_IMAGES = arrayOf(
     "bear_face.png",
     "bunny_face.png",

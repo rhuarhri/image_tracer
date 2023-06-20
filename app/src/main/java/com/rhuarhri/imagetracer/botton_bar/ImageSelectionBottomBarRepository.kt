@@ -4,11 +4,15 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import com.rhuarhri.imagetracer.utils.ImageUtils
-import java.lang.Exception
+import com.rhuarhri.imagetracer.database.ImageDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.net.URL
+import javax.inject.Inject
 
-class ImageSelectionBottomBarRepository {
+class ImageSelectionBottomBarRepository @Inject constructor(private val imageDao : ImageDao) {
 
     fun getImageFromUri(context : Context, uri : Uri) : Bitmap? {
         val stream = context.contentResolver.openInputStream(uri)
@@ -16,8 +20,12 @@ class ImageSelectionBottomBarRepository {
     }
 
     suspend fun getImageFromUrl(url: String): Pair<Bitmap?, String?> {
+        /*this returns a pair. the first item is a image the second item is error*/
+
         return try {
-            val inputStream = URL(url).openStream()
+            val inputStream = withContext(Dispatchers.IO) {
+                URL(url).openStream()
+            }
             Pair(
                 first = BitmapFactory.decodeStream(inputStream),
                 second = null
@@ -30,8 +38,16 @@ class ImageSelectionBottomBarRepository {
         }
     }
 
-    fun getImageFromAsset(context: Context, fileName: String): Bitmap? {
-        return ImageUtils.assetFileToBitmap(context, fileName)
+    fun getHistory() : Flow<List<Bitmap>> {
+        /*All the images are stored as byte arrays. As a result they are converted into bitmaps
+        here.
+         */
+        return imageDao.getImageHistory().map { entities ->
+            entities.mapNotNull { image ->
+                val imageBytes = image.data
+                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+            }
+        }
     }
 
 }

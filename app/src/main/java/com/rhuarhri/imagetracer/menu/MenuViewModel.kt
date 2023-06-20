@@ -27,6 +27,10 @@ class MenuViewModel @Inject constructor(private val repository: MenuRepository) 
     )
 
     private fun getCount() : Int {
+        /*the count represents the number of times the user has used the app without watching an
+        ad. For the moment if the app is used 5 times then they must watch an ad to continue.
+         */
+
         val count = if (adCount.value.isEmpty()) {
             0
         } else {

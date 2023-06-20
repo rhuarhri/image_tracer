@@ -2,6 +2,7 @@ package com.rhuarhri.imagetracer.di
 
 import android.content.Context
 import androidx.room.Room
+import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBarRepository
 import com.rhuarhri.imagetracer.botton_bar.ImageTracingBottomBarRepository
 import com.rhuarhri.imagetracer.cameratrace.CameraTraceRepository
 import com.rhuarhri.imagetracer.database.AdDao
@@ -61,6 +62,12 @@ object AppModule {
     @Singleton
     fun provideLightBox(imageDao: ImageDao) : LightBoxRepository {
         return LightBoxRepository(imageDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageSelectionBottomBarRepository(imageDao: ImageDao) : ImageSelectionBottomBarRepository {
+        return ImageSelectionBottomBarRepository(imageDao)
     }
 
     @Provides

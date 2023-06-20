@@ -3,6 +3,7 @@ package com.rhuarhri.imagetracer.botton_bar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rhuarhri.imagetracer.R
@@ -36,8 +39,9 @@ class ImageTracingBottomBar {
         BottomBar.Bar(viewModel = viewModel as BottomBarViewModel,
             items = EditingFeature.values() as Array<BottomBarItem>) {
             when (it) {
+                /*the extension for the bottom bar is chosen here*/
                 EditingFeature.Reset -> {
-                    Rest(viewModel = viewModel)
+                    Reset(viewModel = viewModel)
                 }
                 EditingFeature.Resize -> {
                     ResizeImage(viewModel = viewModel)
@@ -68,7 +72,7 @@ class ImageTracingBottomBar {
     }
 
     @Composable
-    fun Rest(viewModel : ImageTracingBottomBarViewModel) {
+    fun Reset(viewModel : ImageTracingBottomBarViewModel) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -92,69 +96,97 @@ class ImageTracingBottomBar {
             BottomBar.CloseExtensionButton(viewModel = viewModel)
         }
     }
-    
+
+    @Composable
+    fun ImageTracingExtensionBody(
+        height : Dp,
+        onReset : () -> Unit,
+        viewModel: ImageTracingBottomBarViewModel,
+        body : @Composable (scope : ColumnScope) -> Unit) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(height),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f, true), horizontalAlignment = Alignment.CenterHorizontally) {
+
+                body.invoke(this)
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    BottomBar.RestButton {
+                        onReset.invoke()
+                    }
+
+                    BottomBar.CloseExtensionButton(viewModel = viewModel)
+                }
+            }
+
+        }
+    }
+
     @Composable
     fun ResizeImage(viewModel: ImageTracingBottomBarViewModel) {
         val enablePinchToZoom by viewModel.enablePinchToZoom.collectAsState()
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BottomBar.RestButton {
-                viewModel.resetScale()
+        ImageTracingExtensionBody(
+            height = 150.dp,
+            onReset = { viewModel.resetScale()
                 viewModel.resetRotation()
                 viewModel.resetOffset()
                 viewModel.resetEnablePinchToZoom()
-            }
+            }, viewModel = viewModel) {
+
             Column(
-                modifier = Modifier.weight(1f, true)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     stringResource(id = R.string.image_tracing_bar_resize_item_title),
                     modifier = Modifier.fillMaxWidth(),
-                    fontSize = 24.sp
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp
                 )
 
                 Switch(checked = enablePinchToZoom, onCheckedChange = {
                     viewModel.setEnablePinchToZoom(!enablePinchToZoom)
                 })
             }
-            BottomBar.CloseExtensionButton(viewModel = viewModel)
         }
     }
 
     @Composable
     fun Invert(viewModel : ImageTracingBottomBarViewModel) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BottomBar.RestButton {
+
+        ImageTracingExtensionBody(
+            height = 150.dp,
+            onReset = {
                 viewModel.resetInvert()
                 viewModel.edit()
-            }
+            },
+            viewModel = viewModel) {
             Button(onClick = {
                 val invert = viewModel.invert.value
                 viewModel.setInvert(!invert)
                 viewModel.edit()
             }) {
-                Icon(imageVector = Icons.Default.Contrast,
+                Icon(
+                    imageVector = Icons.Default.Contrast,
                     contentDescription = stringResource(id = R.string.image_tracing_bar_invert_item_title),
-                    modifier = Modifier.size(40.dp, 40.dp))
+                    modifier = Modifier.size(40.dp, 40.dp)
+                )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                Text(stringResource(id = R.string.image_tracing_bar_invert_item_title), fontSize = 20.sp)
+                Text(
+                    stringResource(id = R.string.image_tracing_bar_invert_item_title),
+                    fontSize = 20.sp
+                )
             }
-
-            BottomBar.CloseExtensionButton(viewModel = viewModel)
         }
     }
     
@@ -164,21 +196,17 @@ class ImageTracingBottomBar {
         val green by viewModel.green.collectAsState()
         val blue by viewModel.blue.collectAsState()
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BottomBar.RestButton {
+        ImageTracingExtensionBody(
+            height = 350.dp,
+            onReset = {
                 viewModel.resetRed()
                 viewModel.resetGreen()
                 viewModel.resetBlue()
                 viewModel.edit()
-            }
+            }, viewModel = viewModel) {
+
             Column(
-                modifier = Modifier.weight(1f, true)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 BarSlider(
                     title = stringResource(id = R.string.image_tracing_bar_colour_item_red),
@@ -216,7 +244,7 @@ class ImageTracingBottomBar {
                     }
                 )
             }
-            BottomBar.CloseExtensionButton(viewModel = viewModel)
+
         }
     }
     
@@ -225,38 +253,28 @@ class ImageTracingBottomBar {
 
         val transparency by viewModel.transparency.collectAsState()
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BottomBar.RestButton {
+        ImageTracingExtensionBody(
+            height = 150.dp,
+            onReset = {
                 viewModel.resetTransparency()
                 viewModel.edit()
-            }
+                      },
+            viewModel = viewModel) {
             Column(
-                modifier = Modifier.weight(1f, true)
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    stringResource(id = R.string.image_tracing_bar_transparency_item_title, transparency),
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 24.sp
-                )
-                Slider(
-                    value = transparency.toFloat(),
-                    onValueChange = {
-                        viewModel.setTransparency(it.roundToInt())
+                BarSlider(
+                    title = stringResource(id = R.string.image_tracing_bar_transparency_item_title),
+                    value = transparency,
+                    range = 0f..100f,
+                    onValueChanged = {
+                        viewModel.setTransparency(it)
                     },
-                    onValueChangeFinished = {
-                                            viewModel.edit()
-                    },
-                    valueRange = 0f..100f
+                    onChangeFinished = {
+                        viewModel.edit()
+                    }
                 )
             }
-            BottomBar.CloseExtensionButton(viewModel = viewModel)
         }
     }
 
@@ -266,22 +284,16 @@ class ImageTracingBottomBar {
         val contrast by viewModel.contrast.collectAsState()
         val brightness by viewModel.brightness.collectAsState()
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BottomBar.RestButton {
+        ImageTracingExtensionBody(
+            height = 250.dp,
+            onReset = {
                 viewModel.resetContrast()
                 viewModel.resetBrightness()
                 viewModel.edit()
-            }
-
+            },
+            viewModel = viewModel) {
             Column(
-                modifier = Modifier.weight(1f, true)
+                modifier = Modifier.fillMaxWidth()
             ) {
 
                 BarSlider(
@@ -308,8 +320,6 @@ class ImageTracingBottomBar {
                     }
                 )
             }
-
-            BottomBar.CloseExtensionButton(viewModel = viewModel)
         }
     }
 
@@ -318,20 +328,15 @@ class ImageTracingBottomBar {
 
         val luminance by viewModel.luminance.collectAsState()
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BottomBar.RestButton {
+        ImageTracingExtensionBody(
+            height = 150.dp,
+            onReset = {
                 viewModel.resetLuminance()
                 viewModel.edit()
-            }
+            },
+            viewModel = viewModel) {
             Column(
-                modifier = Modifier.weight(1f, true)
+                modifier = Modifier.fillMaxWidth()
             ) {
 
                 BarSlider(
@@ -346,39 +351,37 @@ class ImageTracingBottomBar {
                     }
                 )
             }
-            BottomBar.CloseExtensionButton(viewModel = viewModel)
         }
     }
 
     @Composable
     fun Monochrome(viewModel : ImageTracingBottomBarViewModel) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BottomBar.RestButton {
+
+        ImageTracingExtensionBody(
+            height = 150.dp,
+            onReset = {
                 viewModel.resetMonochrome()
                 viewModel.edit()
-            }
+            },
+            viewModel = viewModel) {
             Button(onClick = {
                 val isMonochrome = viewModel.isMonochrome.value
                 viewModel.setMonochrome(!isMonochrome)
                 viewModel.edit()
             }) {
-                Icon(imageVector = Icons.Default.Contrast,
+                Icon(
+                    imageVector = Icons.Default.Contrast,
                     contentDescription = stringResource(id = R.string.image_tracing_bar_monochrome_item_title),
-                    modifier = Modifier.size(40.dp, 40.dp))
+                    modifier = Modifier.size(40.dp, 40.dp)
+                )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                Text(stringResource(id = R.string.image_tracing_bar_monochrome_item_title), fontSize = 20.sp)
+                Text(
+                    stringResource(id = R.string.image_tracing_bar_monochrome_item_title),
+                    fontSize = 20.sp
+                )
             }
-
-            BottomBar.CloseExtensionButton(viewModel = viewModel)
         }
     }
 

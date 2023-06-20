@@ -9,7 +9,7 @@
     <string name="image_tracing_bar_colour_item_green">Green</string>
     <string name="image_tracing_bar_colour_item_blue">Blue</string>
 
-    <string name="image_tracing_bar_transparency_item_title">Set Image transparency to %1s</string>
+    <string name="image_tracing_bar_transparency_item_title">transparency</string>
 
     <string name="image_tracing_bar_contrast_item_title">Contrast</string>
 

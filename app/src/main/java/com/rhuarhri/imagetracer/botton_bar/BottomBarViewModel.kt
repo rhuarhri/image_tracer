@@ -12,6 +12,7 @@ abstract class BottomBarViewModel : ViewModel() {
     private val _isBarVisible : MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isBarVisible : StateFlow<Boolean> = _isBarVisible
 
+    /*The selected item is the selected option in the bottom bar*/
     private val _selectedItem : MutableStateFlow<BottomBarItem?> = MutableStateFlow(null)
     val selectedItem: StateFlow<BottomBarItem?> = _selectedItem
 
@@ -37,6 +38,10 @@ abstract class BottomBarViewModel : ViewModel() {
     fun hideExtension() {
         _isExtensionVisible.update {
             false
+        }
+
+        _selectedItem.update {
+            null
         }
     }
 

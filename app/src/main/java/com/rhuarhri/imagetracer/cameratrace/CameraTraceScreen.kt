@@ -1,6 +1,8 @@
 package com.rhuarhri.imagetracer.cameratrace
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.rhuarhri.imagetracer.botton_bar.ImageTracingBottomBar
@@ -33,8 +36,6 @@ class CameraTraceScreen {
     fun Screen(navController : NavController) {
 
         val barViewModel : ImageTracingBottomBarViewModel = hiltViewModel()
-
-        barViewModel.getImage()
 
         ImageTracerTheme {
             // A surface container using the 'background' color from the theme
@@ -84,13 +85,52 @@ class CameraTraceScreen {
 
         val tracingImage by barViewModel.tracingBitmap.collectAsState()
 
+        val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+            var scale = barViewModel.scale.value
+            scale *= zoomChange
+            barViewModel.setScale(scale)
+
+            var rotation = barViewModel.rotation.value
+            rotation += rotationChange
+            barViewModel.setRotation(rotation)
+
+            var offset = barViewModel.offset.value
+            offset += offsetChange
+            barViewModel.setOffset(offset)
+        }
+
         Box(modifier = Modifier.fillMaxSize()) {
 
             CameraDisplay()
 
             tracingImage?.let {
+
+                val scale by barViewModel.scale.collectAsState()
+                val rotation by barViewModel.rotation.collectAsState()
+                val offset by barViewModel.offset.collectAsState()
+
+                val enablePinchToZoom by barViewModel.enablePinchToZoom.collectAsState()
+                val isBarVisible by barViewModel.isBarVisible.collectAsState()
+
+                //the user has allowed pinch to zoom and the editing
+                //tools are visible so the user is currently editing
+                val enabled = isBarVisible && enablePinchToZoom
+
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment =  Alignment.Center) {
-                    Image(bitmap = it.asImageBitmap(), contentDescription = "Image being traced",)
+                    Image(bitmap = it.asImageBitmap(), contentDescription = "Image being traced",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer(
+                                scaleX = scale,
+                                scaleY = scale,
+                                rotationZ = rotation,
+                                translationX = offset.x,
+                                translationY = offset.y
+                            )
+                            .transformable(
+                                state = state,
+                                enabled = enabled
+                            ))
                 }
             }
 

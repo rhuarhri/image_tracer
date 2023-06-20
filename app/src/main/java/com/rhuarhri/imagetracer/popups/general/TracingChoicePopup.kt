@@ -1,5 +1,8 @@
 package com.rhuarhri.imagetracer.popups.general
 
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,10 +24,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.rhuarhri.imagetracer.R
 import com.rhuarhri.imagetracer.popups.HelpPopup
+import com.rhuarhri.imagetracer.popups.WarningPopup
 
 @Composable
 fun TracingChoicePopup(
@@ -68,19 +74,17 @@ fun TracingChoicePopup(
         },
         text = {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                Button(onClick = { onScreenTraceSelected.invoke() }) {
-                    Icon(
-                        imageVector = Icons.Default.PhoneAndroid,
-                        contentDescription = "Screen",
-                        modifier = Modifier.size(40.dp))
+
+                ScreenChoiceButton {
+                    onScreenTraceSelected.invoke()
+                    onDismiss.invoke()
                 }
 
-                Button(onClick = { onCameraTraceSelected.invoke() }) {
-                    Icon(
-                        imageVector = Icons.Default.Camera,
-                        contentDescription = "Camera",
-                        modifier = Modifier.size(40.dp))
+                CameraChoiceButton {
+                    onCameraTraceSelected.invoke()
+                    onDismiss.invoke()
                 }
+
             }
         },
         confirmButton = {
@@ -90,4 +94,66 @@ fun TracingChoicePopup(
             }
         }
     )
+}
+
+@Composable
+fun ScreenChoiceButton(onClick : () -> Unit) {
+
+    Button(onClick = { onClick.invoke() }) {
+        Icon(
+            imageVector = Icons.Default.PhoneAndroid,
+            contentDescription = "Screen",
+            modifier = Modifier.size(40.dp))
+    }
+}
+
+@Composable
+fun CameraChoiceButton(onClick: () -> Unit) {
+    var showPermissionDeniedPopup by remember {
+        mutableStateOf(false)
+    }
+
+    if (showPermissionDeniedPopup) {
+        WarningPopup(
+            title = stringResource(id = R.string.tracing_choice_no_permission_warning_title),
+            message = stringResource(id = R.string.tracing_choice_no_permission_warning_message)) {
+            showPermissionDeniedPopup = false
+        }
+    }
+
+    var isPermissionGranted by remember {
+        mutableStateOf(false)
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        isPermissionGranted = isGranted
+        if (!isGranted) {
+            showPermissionDeniedPopup = true
+        }
+    }
+
+    val context = LocalContext.current
+
+    Button(onClick = {
+
+        val permission = android.Manifest.permission.CAMERA
+
+        isPermissionGranted = ContextCompat.checkSelfPermission(
+            context, permission) == PackageManager.PERMISSION_GRANTED
+
+        if (!isPermissionGranted) {
+            permissionLauncher.launch(permission)
+        }
+
+        if (isPermissionGranted) {
+            onClick.invoke()
+        }
+    }) {
+        Icon(
+            imageVector = Icons.Default.Camera,
+            contentDescription = "Camera",
+            modifier = Modifier.size(40.dp))
+    }
 }

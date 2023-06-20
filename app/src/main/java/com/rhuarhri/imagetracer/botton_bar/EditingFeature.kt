@@ -24,7 +24,7 @@ enum class EditingFeature(
 
     Resize(R.string.image_tracing_resize_option,
         Icons.Default.Pinch,
-        R.string.image_tracing_reset_help),
+        R.string.image_tracing_resize_help),
 
     Invert(R.string.image_tracing_invert_option,
         Icons.Default.InvertColors,

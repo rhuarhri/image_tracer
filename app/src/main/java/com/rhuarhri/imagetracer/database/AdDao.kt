@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AdDao {
 
+    /*
+    There should only be one entity that contains the add count.
+     */
     @Upsert
     suspend fun updateAd(adEntity: AdEntity)
 

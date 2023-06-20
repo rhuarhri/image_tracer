@@ -1,6 +1,7 @@
 package com.rhuarhri.imagetracer.botton_bar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,8 +41,8 @@ import com.rhuarhri.imagetracer.popups.HelpPopup
 object BottomBar {
 
     @Composable
-    fun Bar(viewModel: BottomBarViewModel, items: Array<BottomBarItem>, extension : @Composable
-        (item : BottomBarItem) -> Unit) {
+    fun Bar(viewModel: BottomBarViewModel, items: Array<BottomBarItem>,
+            extension : @Composable (item : BottomBarItem) -> Unit) {
 
         val isVisible by viewModel.isBarVisible.collectAsState()
         val isExtensionVisible by viewModel.isExtensionVisible.collectAsState()
@@ -49,15 +50,15 @@ object BottomBar {
 
         if (isVisible) {
             Box(
-                modifier =
-                Modifier
-                    .background(MaterialTheme.colorScheme.primary)
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
 
-                Column() {
+                Column {
 
+                    /*The extension will be controls for that option*/
                     if (isExtensionVisible) {
                         Box(
                             modifier = Modifier
@@ -79,6 +80,10 @@ object BottomBar {
                                         horizontalArrangement = Arrangement.End
                                     ) {
 
+                                        /*In order to help the user if they get stuck there is a
+                                        popup for every extension describing what the extension
+                                        does and how to use it
+                                         */
                                         var showHelpPopup by remember {
                                             mutableStateOf(false)
                                         }
@@ -106,18 +111,25 @@ object BottomBar {
                                         }
                                     }
 
+                                    /*This is the extension. Since this is a general bottom bar
+                                    the extension is passed in through the extension function.
+                                     */
                                     extension.invoke(it)
                                 }
                             }
                         }
                     }
 
+                    /*This is a the bottom bar which contains the options.
+                     */
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         this.items(items) {
-                            Item(item = it, onItemClicked = {
+                            val selected = selectedItem == it
+
+                            Item(item = it, selected, onItemClicked = {
                                 viewModel.showExtension()
                                 viewModel.setSelectedItem(it)
                             })
@@ -130,24 +142,35 @@ object BottomBar {
     }
 
     @Composable
-    private fun Item(item : BottomBarItem, onItemClicked: (option: BottomBarItem) -> Unit) {
+    private fun Item(item : BottomBarItem, selected : Boolean,
+                     onItemClicked: (option: BottomBarItem) -> Unit) {
+
+        var columnModifier = Modifier.clickable {
+            onItemClicked.invoke(item)
+        }
+
+        //If selected draw a border around the item to show that this item is currently selected.
+        if (selected) {
+            columnModifier = columnModifier.border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(8.dp)
+            )
+        }
+
         Column(
-            modifier = Modifier
-                .clickable {
-                    onItemClicked.invoke(item)
-                }
-                .padding(8.dp),
+            modifier = columnModifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 imageVector = item.icon,
                 contentDescription = stringResource(id = item.title),
                 modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = MaterialTheme.colorScheme.primary
             )
             Text(
                 stringResource(id = item.title),
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp)
         }
     }
@@ -158,17 +181,19 @@ object BottomBar {
             viewModel.hideExtension()
         },
             modifier = Modifier.padding(8.dp)
-            ) {
+        ) {
             Icon(imageVector = Icons.Default.Close, contentDescription = "Close",
                 modifier = Modifier.size(40.dp, 40.dp), tint = MaterialTheme.colorScheme.onPrimary
-                )
+            )
         }
     }
 
     @Composable
-    fun RestButton(onRest : () -> Unit) {
+    fun RestButton(onReset : () -> Unit) {
+        /*This app allows you to edit as a result this is a general undo button to correct
+        mistakes.*/
         Button(onClick = {
-            onRest.invoke()
+            onReset.invoke()
         },
         modifier = Modifier.padding(8.dp)
             ) {

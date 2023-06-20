@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.rhuarhri.imagetracer.R
 import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBar
@@ -33,7 +32,6 @@ import com.rhuarhri.imagetracer.navigation.Route
 import com.rhuarhri.imagetracer.popups.WarningPopup
 import com.rhuarhri.imagetracer.popups.general.TracingChoicePopup
 import com.rhuarhri.imagetracer.ui.theme.ImageTracerTheme
-import com.rhuarhri.imagetracer.utils.PermissionUtils
 
 class ImageSelectionScreen {
 
@@ -45,7 +43,7 @@ class ImageSelectionScreen {
 
         val viewModel : ImageSelectionViewModel = hiltViewModel()
 
-        val bottomBarViewModel : ImageSelectionBottomBarViewModel = viewModel()
+        val bottomBarViewModel : ImageSelectionBottomBarViewModel = hiltViewModel()
         val selectedImage by bottomBarViewModel.selectedBitmap.collectAsState()
 
         ImageTracerTheme {
@@ -82,9 +80,7 @@ class ImageSelectionScreen {
                                     navController.navigate(Route.LightBoxScreen.route)
                                 },
                                 onCameraTraceSelected = {
-                                    if (PermissionUtils.hasCameraPermission(context)) {
-                                        navController.navigate(Route.CameraTraceScreen.route)
-                                    }
+                                    navController.navigate(Route.CameraTraceScreen.route)
                                 },
                                 onDismiss = {
                                     showTracingChoicePopup = false
@@ -113,7 +109,6 @@ class ImageSelectionScreen {
                             if (selectedImage != null) {
                                 selectedImage?.let {
                                     viewModel.saveImage(
-                                        "",
                                         it
                                     ).invokeOnCompletion {
                                         showTracingChoicePopup = true
@@ -123,8 +118,8 @@ class ImageSelectionScreen {
                                 showNoImageSelectedWarning = true
                             }
                         }) {
-                            Icon(imageVector = Icons.Default.ArrowForward, contentDescription =
-                            "Next")
+                            Icon(imageVector = Icons.Default.ArrowForward,
+                                contentDescription = "Next")
                         }
                     },
                     bottomBar = {
