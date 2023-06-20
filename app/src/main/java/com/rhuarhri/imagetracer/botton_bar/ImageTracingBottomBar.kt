@@ -1,6 +1,8 @@
 package com.rhuarhri.imagetracer.botton_bar
 
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -34,38 +36,50 @@ import kotlin.math.roundToInt
 
 class ImageTracingBottomBar {
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun Bar(viewModel: ImageTracingBottomBarViewModel) {
         BottomBar.Bar(viewModel = viewModel as BottomBarViewModel,
             items = EditingFeature.values() as Array<BottomBarItem>) {
-            when (it) {
-                /*the extension for the bottom bar is chosen here*/
-                EditingFeature.Reset -> {
-                    Reset(viewModel = viewModel)
-                }
-                EditingFeature.Resize -> {
-                    ResizeImage(viewModel = viewModel)
-                }
-                EditingFeature.Invert -> {
-                    Invert(viewModel = viewModel)
-                }
-                EditingFeature.ChangeColor -> {
-                    ChangeImageColour(viewModel = viewModel)
-                }
-                EditingFeature.Transparency -> {
-                    TransparencyImage(viewModel = viewModel)
-                }
-                EditingFeature.Contrast -> {
-                    Contrast(viewModel = viewModel)
-                }
-                EditingFeature.Luminance -> {
-                    Luminance(viewModel = viewModel)
-                }
-                EditingFeature.Monochrome -> {
-                    Monochrome(viewModel = viewModel)
-                }
-                else -> {
 
+            AnimatedContent(targetState = it) {
+                when (it) {
+                    /*the extension for the bottom bar is chosen here*/
+                    EditingFeature.Reset -> {
+                        Reset(viewModel = viewModel)
+                    }
+
+                    EditingFeature.Resize -> {
+                        ResizeImage(viewModel = viewModel)
+                    }
+
+                    EditingFeature.Invert -> {
+                        Invert(viewModel = viewModel)
+                    }
+
+                    EditingFeature.ChangeColor -> {
+                        ChangeImageColour(viewModel = viewModel)
+                    }
+
+                    EditingFeature.Transparency -> {
+                        TransparencyImage(viewModel = viewModel)
+                    }
+
+                    EditingFeature.Contrast -> {
+                        Contrast(viewModel = viewModel)
+                    }
+
+                    EditingFeature.Luminance -> {
+                        Luminance(viewModel = viewModel)
+                    }
+
+                    EditingFeature.Monochrome -> {
+                        Monochrome(viewModel = viewModel)
+                    }
+
+                    else -> {
+
+                    }
                 }
             }
         }

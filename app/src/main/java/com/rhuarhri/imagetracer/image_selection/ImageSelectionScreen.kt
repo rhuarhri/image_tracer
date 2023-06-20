@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -38,8 +37,6 @@ class ImageSelectionScreen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Screen(navController : NavController) {
-
-        val context = LocalContext.current
 
         val viewModel : ImageSelectionViewModel = hiltViewModel()
 
@@ -77,10 +74,14 @@ class ImageSelectionScreen {
                         if (showTracingChoicePopup) {
                             TracingChoicePopup(
                                 onScreenTraceSelected = {
-                                    navController.navigate(Route.LightBoxScreen.route)
+                                    navController.navigate(Route.LightBoxScreen.route){
+                                        popUpTo(Route.MenuScreen.route)
+                                    }
                                 },
                                 onCameraTraceSelected = {
-                                    navController.navigate(Route.CameraTraceScreen.route)
+                                    navController.navigate(Route.CameraTraceScreen.route){
+                                        popUpTo(Route.MenuScreen.route)
+                                    }
                                 },
                                 onDismiss = {
                                     showTracingChoicePopup = false

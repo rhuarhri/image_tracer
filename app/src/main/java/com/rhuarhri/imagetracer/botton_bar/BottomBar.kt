@@ -1,5 +1,6 @@
 package com.rhuarhri.imagetracer.botton_bar
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -59,7 +60,7 @@ object BottomBar {
                 Column {
 
                     /*The extension will be controls for that option*/
-                    if (isExtensionVisible) {
+                    AnimatedVisibility(visible = isExtensionVisible) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()

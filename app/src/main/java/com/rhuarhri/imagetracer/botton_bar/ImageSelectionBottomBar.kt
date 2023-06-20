@@ -5,6 +5,8 @@ import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,36 +53,41 @@ import java.util.Objects
 
 object ImageSelectionBottomBar {
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun Bar(viewModel: ImageSelectionBottomBarViewModel) {
         BottomBar.Bar(
             viewModel = viewModel as BottomBarViewModel,
             items = ImageSelectionOption.values() as Array<BottomBarItem>
         ) {
-            when (it) {
-                /*When the extension is visible. The extension that will be displayed is chosen
-                here
-                 */
-                ImageSelectionOption.Storage -> {
-                    StorageImages(viewModel)
-                }
 
-                ImageSelectionOption.Camera -> {
-                    CameraImages(viewModel)
-                }
+            AnimatedContent(targetState = it) {
+                when (it) {
+                    /*When the extension is visible. The extension that will be displayed is chosen
+                    here
+                     */
+                    ImageSelectionOption.Storage -> {
+                        StorageImages(viewModel)
+                    }
 
-                ImageSelectionOption.Internet -> {
-                    InternetImages(viewModel)
-                }
+                    ImageSelectionOption.Camera -> {
+                        CameraImages(viewModel)
+                    }
 
-                ImageSelectionOption.Sample -> {
-                    SampleImages(viewModel)
-                }
-                ImageSelectionOption.History -> {
-                    HistoryImages(viewModel)
-                }
-                else -> {
+                    ImageSelectionOption.Internet -> {
+                        InternetImages(viewModel)
+                    }
 
+                    ImageSelectionOption.Sample -> {
+                        SampleImages(viewModel)
+                    }
+
+                    ImageSelectionOption.History -> {
+                        HistoryImages(viewModel)
+                    }
+                    else -> {
+
+                    }
                 }
             }
         }
