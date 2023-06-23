@@ -38,7 +38,7 @@ fun CameraDisplay() {
             lifecycleOwner,
             cameraSelector,
             preview
-        )
+        ).cameraControl.cancelFocusAndMetering()
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
 
