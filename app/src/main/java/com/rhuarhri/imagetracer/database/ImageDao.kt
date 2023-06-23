@@ -2,13 +2,14 @@ package com.rhuarhri.imagetracer.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ImageDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addImage(imageEntity: ImageEntity)
 
     /*get the last image to have entered the data base*/
