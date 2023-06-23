@@ -2,6 +2,7 @@ package com.rhuarhri.imagetracer.botton_bar
 
 
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.rhuarhri.imagetracer.R
 import com.rhuarhri.imagetracer.popups.WarningPopup
@@ -59,10 +61,10 @@ object ImageSelectionBottomBar {
         BottomBar.Bar(
             viewModel = viewModel as BottomBarViewModel,
             items = ImageSelectionOption.values() as Array<BottomBarItem>
-        ) {
+        ) { item ->
 
-            AnimatedContent(targetState = it) {
-                when (it) {
+            AnimatedContent(targetState = item) {
+                when (item) {
                     /*When the extension is visible. The extension that will be displayed is chosen
                     here
                      */
@@ -156,6 +158,31 @@ object ImageSelectionBottomBar {
                 viewModel.getFromCamera(context, uri)
             }
 
+        var showPermissionDeniedPopup by remember {
+            mutableStateOf(false)
+        }
+
+        if (showPermissionDeniedPopup) {
+            WarningPopup(
+                title = stringResource(id = R.string.tracing_choice_no_permission_warning_title),
+                message = stringResource(id = R.string.tracing_choice_no_permission_warning_message)) {
+                showPermissionDeniedPopup = false
+            }
+        }
+
+        var isPermissionGranted by remember {
+            mutableStateOf(false)
+        }
+
+        val permissionLauncher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            isPermissionGranted = isGranted
+            if (!isGranted) {
+                showPermissionDeniedPopup = true
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -164,7 +191,19 @@ object ImageSelectionBottomBar {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(onClick = {
-                cameraLauncher.launch(uri)
+
+                val permission = android.Manifest.permission.CAMERA
+
+                isPermissionGranted = ContextCompat.checkSelfPermission(
+                    context, permission) == PackageManager.PERMISSION_GRANTED
+
+                if (!isPermissionGranted) {
+                    permissionLauncher.launch(permission)
+                }
+
+                if (isPermissionGranted) {
+                    cameraLauncher.launch(uri)
+                }
             }) {
                 Icon(
                     imageVector = Icons.Default.Camera, contentDescription = "Camera",

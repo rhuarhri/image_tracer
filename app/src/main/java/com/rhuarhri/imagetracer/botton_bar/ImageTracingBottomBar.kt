@@ -184,7 +184,7 @@ class ImageTracingBottomBar {
             },
             viewModel = viewModel) {
             Button(onClick = {
-                val invert = viewModel.invert.value
+                val invert = viewModel.editSettings.value.invert
                 viewModel.setInvert(!invert)
                 viewModel.edit()
             }) {
@@ -206,9 +206,7 @@ class ImageTracingBottomBar {
     
     @Composable
     fun ChangeImageColour(viewModel : ImageTracingBottomBarViewModel) {
-        val red by viewModel.red.collectAsState()
-        val green by viewModel.green.collectAsState()
-        val blue by viewModel.blue.collectAsState()
+        val settings by viewModel.editSettings.collectAsState()
 
         ImageTracingExtensionBody(
             height = 350.dp,
@@ -224,7 +222,7 @@ class ImageTracingBottomBar {
             ) {
                 BarSlider(
                     title = stringResource(id = R.string.image_tracing_bar_colour_item_red),
-                    value = red,
+                    value = settings.red,
                     range = 0f..100f,
                     onValueChanged = {
                         viewModel.setRed(it)
@@ -236,7 +234,7 @@ class ImageTracingBottomBar {
 
                 BarSlider(
                     title = stringResource(id = R.string.image_tracing_bar_colour_item_green),
-                    value = green,
+                    value = settings.green,
                     range = 0f..100f,
                     onValueChanged = {
                         viewModel.setGreen(it)
@@ -248,7 +246,7 @@ class ImageTracingBottomBar {
 
                 BarSlider(
                     title = stringResource(id = R.string.image_tracing_bar_colour_item_blue),
-                    value = blue,
+                    value = settings.blue,
                     range = 0f..100f,
                     onValueChanged = {
                         viewModel.setBlue(it)
@@ -265,7 +263,7 @@ class ImageTracingBottomBar {
     @Composable
     fun TransparencyImage(viewModel: ImageTracingBottomBarViewModel) {
 
-        val transparency by viewModel.transparency.collectAsState()
+        val settings by viewModel.editSettings.collectAsState()
 
         ImageTracingExtensionBody(
             height = 150.dp,
@@ -279,7 +277,7 @@ class ImageTracingBottomBar {
             ) {
                 BarSlider(
                     title = stringResource(id = R.string.image_tracing_bar_transparency_item_title),
-                    value = transparency,
+                    value = settings.transparency,
                     range = 0f..100f,
                     onValueChanged = {
                         viewModel.setTransparency(it)
@@ -295,8 +293,7 @@ class ImageTracingBottomBar {
     @Composable
     fun Contrast(viewModel : ImageTracingBottomBarViewModel) {
 
-        val contrast by viewModel.contrast.collectAsState()
-        val brightness by viewModel.brightness.collectAsState()
+        val settings by viewModel.editSettings.collectAsState()
 
         ImageTracingExtensionBody(
             height = 250.dp,
@@ -312,7 +309,7 @@ class ImageTracingBottomBar {
 
                 BarSlider(
                     title = stringResource(id = R.string.image_tracing_bar_contrast_item_title),
-                    value = contrast,
+                    value = settings.contrast,
                     range = 10f..30f,
                     onValueChanged = {
                         viewModel.setContrast(it)
@@ -324,7 +321,7 @@ class ImageTracingBottomBar {
 
                 BarSlider(
                     title = stringResource(id = R.string.image_tracing_bar_brightness_item_title),
-                    value = brightness,
+                    value = settings.brightness,
                     range = -50f..50f,
                     onValueChanged = {
                         viewModel.setBrightness(it)
@@ -340,7 +337,7 @@ class ImageTracingBottomBar {
     @Composable
     fun Luminance(viewModel: ImageTracingBottomBarViewModel) {
 
-        val luminance by viewModel.luminance.collectAsState()
+        val settings by viewModel.editSettings.collectAsState()
 
         ImageTracingExtensionBody(
             height = 150.dp,
@@ -355,7 +352,7 @@ class ImageTracingBottomBar {
 
                 BarSlider(
                     title = stringResource(id = R.string.image_tracing_bar_shadows_item_title),
-                    value = luminance,
+                    value = settings.luminance,
                     range = 0f..100f,
                     onValueChanged = {
                         viewModel.setLuminance(it)
@@ -379,7 +376,7 @@ class ImageTracingBottomBar {
             },
             viewModel = viewModel) {
             Button(onClick = {
-                val isMonochrome = viewModel.isMonochrome.value
+                val isMonochrome = viewModel.editSettings.value.isMonochrome
                 viewModel.setMonochrome(!isMonochrome)
                 viewModel.edit()
             }) {

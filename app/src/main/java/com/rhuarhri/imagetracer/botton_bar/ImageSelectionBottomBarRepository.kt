@@ -11,34 +11,32 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.net.URL
 import javax.inject.Inject
+import kotlin.jvm.Throws
 
-class ImageSelectionBottomBarRepository @Inject constructor(private val imageDao : ImageDao) {
+class ImageSelectionBottomBarRepository @Inject constructor(
+    private val imageDao : ImageDao
+    ) : ImageSelectionBottomBarRepositoryInterface {
 
-    fun getImageFromUri(context : Context, uri : Uri) : Bitmap? {
+    override fun getImageFromUri(context : Context, uri : Uri) : Bitmap? {
         val stream = context.contentResolver.openInputStream(uri)
         return BitmapFactory.decodeStream(stream)
     }
 
-    suspend fun getImageFromUrl(url: String): Pair<Bitmap?, String?> {
+    @Throws(Exception::class)
+    override suspend fun getImageFromUrl(url: String): Bitmap? {
         /*this returns a pair. the first item is a image the second item is error*/
 
         return try {
             val inputStream = withContext(Dispatchers.IO) {
                 URL(url).openStream()
             }
-            Pair(
-                first = BitmapFactory.decodeStream(inputStream),
-                second = null
-            )
+            BitmapFactory.decodeStream(inputStream)
         } catch (e: Exception) {
-            Pair(
-                first = null,
-                second = e.toString()
-            )
+            throw (e)
         }
     }
 
-    fun getHistory() : Flow<List<Bitmap>> {
+    override fun getHistory() : Flow<List<Bitmap>> {
         /*All the images are stored as byte arrays. As a result they are converted into bitmaps
         here.
          */
@@ -50,4 +48,14 @@ class ImageSelectionBottomBarRepository @Inject constructor(private val imageDao
         }
     }
 
+}
+
+interface ImageSelectionBottomBarRepositoryInterface {
+
+    fun getImageFromUri(context : Context, uri : Uri) : Bitmap?
+
+    @Throws(Exception::class)
+    suspend fun getImageFromUrl(url: String) : Bitmap?
+
+    fun getHistory() : Flow<List<Bitmap>>
 }

@@ -12,8 +12,9 @@
     </string>
     <string name="watch_ad_button">Watch Ad</string>
 
-    <string name="no_connection_warning_popup_title">No connection</string>
-    <string name="no_connection_warning_popup_message">In order to watch an ad you must be connected to the internet.</string>
+    <string name="on_ad_error_popup_title">Ad Failed to load.</string>
+    <string name="on_ad_error_popup_message">Check you are connected to the internet and
+        try again.</string>
 
     <string name="can_not_trace_warning_popup_title">This app is ad supported</string>
     <string name="can_not_trace_warning_popup_message">In order to use this app you must view a ad

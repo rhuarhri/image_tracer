@@ -8,34 +8,89 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import com.rhuarhri.imagetracer.database.EditingSettingsDao
 import com.rhuarhri.imagetracer.database.ImageDao
 import javax.inject.Inject
 
+const val DEFAULT_SCALE : Float = 1f
+const val DEFAULT_ROTATION : Float = 0f
+const val DEFAULT_OFFSET_X : Float = 0f
+const val DEFAULT_OFFSET_Y : Float = 0f
+const val DEFAULT_ENABLE_PINCH_TO_ZOOM : Boolean = false
+const val DEFAULT_INVERT : Boolean = false
+const val DEFAULT_RED : Int = 100
+const val DEFAULT_GREEN : Int = 100
+const val DEFAULT_BlUE : Int = 100
+const val DEFAULT_TRANSPARENCY : Int = 100
+const val DEFAULT_CONTRAST : Int = 10
+const val DEFAULT_BRIGHTNESS : Int = 0
+const val DEFAULT_LUMINANCE : Int = 0
+const val DEFAULT_MONOCHROME : Boolean = false
+
 data class EditImageSettings(
-    var transparency :  Int = 100, //as a percentage
-    var invert : Boolean = false,
-    var red : Int = 100, //as a percentage
-    var green : Int = 100, //as a percentage
-    var blue : Int = 100, //as a percentage
-    var contrast : Int = 1,
-    var brightness : Int = 0,
-    var luminance : Int = 100,
-    var isMonochrome : Boolean = false
+    var invert : Boolean = DEFAULT_INVERT,
+    var red : Int = DEFAULT_RED, //as a percentage
+    var green : Int = DEFAULT_GREEN, //as a percentage
+    var blue : Int = DEFAULT_BlUE, //as a percentage
+    var transparency :  Int = DEFAULT_TRANSPARENCY, //as a percentage
+    var contrast : Int = DEFAULT_CONTRAST,
+    var brightness : Int = DEFAULT_BRIGHTNESS,
+    var luminance : Int = DEFAULT_LUMINANCE,
+    var isMonochrome : Boolean = DEFAULT_MONOCHROME
 )
 
-class ImageTracingBottomBarRepository @Inject constructor(private val imageDao : ImageDao) {
+class ImageTracingBottomBarRepository @Inject constructor(
+    private val imageDao : ImageDao,
+    private val editImageSettingsDao: EditingSettingsDao
+    ) : ImageTracingBottomBarRepositoryInterface {
 
-    suspend fun getImage(): Bitmap {
+    override suspend fun getSettings(): EditImageSettings {
+        return editImageSettingsDao.getSettings().map { settings ->
+                EditImageSettings(
+                    settings.invert,
+                    settings.red,
+                    settings.green,
+                    settings.blue,
+                    settings.transparency,
+                    settings.contrast,
+                    settings.brightness,
+                    settings.luminance,
+                    settings.isMonochrome
+                )
+            }.firstOrNull() ?: EditImageSettings()
+    }
+
+    private suspend fun updateSettings(setting: EditImageSettings) {
+
+        editImageSettingsDao.updateSettings(
+            setting.invert,
+            setting.red,
+            setting.green,
+            setting.blue,
+            setting.transparency,
+            setting.contrast,
+            setting.brightness,
+            setting.luminance,
+            setting.isMonochrome
+        )
+    }
+
+    override suspend fun getImage(): Bitmap {
         val imageData = imageDao.getImage().first()
         val imageBytes = imageData.data
+
+        //update settings if there are no settings fro this image
+        editImageSettingsDao.checkAndUpdateSettings(imageData.id)
 
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
 
-    suspend fun editImage(
+    override suspend fun editImage(
         origin : Bitmap,
         setting : EditImageSettings) : Bitmap {
         var editedBitmap = origin
+
+        updateSettings(setting)
 
         if (setting.invert) {
             editedBitmap = invert(editedBitmap)
@@ -208,7 +263,7 @@ class ImageTracingBottomBarRepository @Inject constructor(private val imageDao :
         return editedBitmap
     }
 
-    fun setTransparency(transparency : Int, image : Bitmap) : Bitmap {
+    private fun setTransparency(transparency : Int, image : Bitmap) : Bitmap {
         val transparentBitmap = createBlankBitmap(image.width, image.height)
 
         val alpha = ((transparency * 255) / 100)
@@ -238,4 +293,15 @@ class ImageTracingBottomBarRepository @Inject constructor(private val imageDao :
         return monochromeBitmap
     }
 
+}
+
+interface ImageTracingBottomBarRepositoryInterface {
+
+    suspend fun getSettings() : EditImageSettings
+
+    suspend fun getImage(): Bitmap
+
+    suspend fun editImage(
+        origin : Bitmap,
+        setting : EditImageSettings) : Bitmap
 }

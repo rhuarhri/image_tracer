@@ -14,79 +14,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ImageTracingBottomBarViewModel @Inject constructor(
-    private val repository: ImageTracingBottomBarRepository)
+    private val repository: ImageTracingBottomBarRepositoryInterface)
     : BottomBarViewModel() {
 
     private var original : Bitmap? = null
     private val _tracingBitmap : MutableStateFlow<Bitmap?> = MutableStateFlow(null)
     val tracingBitmap : StateFlow<Bitmap?> = _tracingBitmap
 
+    private val _editSettings : MutableStateFlow<EditImageSettings> = MutableStateFlow(
+        EditImageSettings()
+    )
+    val editSettings : StateFlow<EditImageSettings> = _editSettings
+
     //moving the image
-    private val DEFAULT_SCALE = 1f
     private val _scale : MutableStateFlow<Float> = MutableStateFlow(DEFAULT_SCALE)
     val scale : StateFlow<Float> = _scale
 
-    private val DEFAULT_ROTATION = 0f
     private val _rotation : MutableStateFlow<Float> = MutableStateFlow(DEFAULT_ROTATION)
     val rotation : StateFlow<Float> = _rotation
 
-    private val DEFAULT_OFFSET = Offset.Zero
-    private val _offset : MutableStateFlow<Offset> = MutableStateFlow(DEFAULT_OFFSET)
+    private val _offset : MutableStateFlow<Offset> = MutableStateFlow(Offset(DEFAULT_OFFSET_X, DEFAULT_OFFSET_Y))
     val offset : StateFlow<Offset> = _offset
 
-    private val DEFAULT_ENDABLE_PINCH_TO_ZOOM = false
     private val _enablePinchToZoom : MutableStateFlow<Boolean> =
-        MutableStateFlow(DEFAULT_ENDABLE_PINCH_TO_ZOOM)
+        MutableStateFlow(DEFAULT_ENABLE_PINCH_TO_ZOOM)
     val enablePinchToZoom : StateFlow<Boolean> = _enablePinchToZoom
 
-    private val DEFAULT_INVERT = false
-    private val _invert : MutableStateFlow<Boolean> = MutableStateFlow(DEFAULT_INVERT)
-    val invert : StateFlow<Boolean> = _invert
-
-    private val DEFAULT_RED = 100
-    private val _red : MutableStateFlow<Int> = MutableStateFlow(DEFAULT_RED)
-    val red : StateFlow<Int> = _red
-
-    private val DEFAULT_GREEN = 100
-    private val _green : MutableStateFlow<Int> = MutableStateFlow(DEFAULT_GREEN)
-    val green : StateFlow<Int> = _green
-
-    private val DEFAULT_BlUE = 100
-    private val _blue : MutableStateFlow<Int> = MutableStateFlow(DEFAULT_BlUE)
-    val blue : StateFlow<Int> = _blue
-
-    private val DEFAULT_TRANSPARENCY = 100
-    private val _transparency : MutableStateFlow<Int> = MutableStateFlow(DEFAULT_TRANSPARENCY)
-    val transparency : StateFlow<Int> = _transparency
-
-    private val DEFAULT_CONTRAST = 10
-    private val _contrast : MutableStateFlow<Int> = MutableStateFlow(DEFAULT_CONTRAST)
-    val contrast : StateFlow<Int> = _contrast
-
-    private val DEFAULT_BRIGHTNESS = 0
-    private val _brightness : MutableStateFlow<Int> = MutableStateFlow(DEFAULT_BRIGHTNESS)
-    val brightness : StateFlow<Int> = _brightness
-
-    private val DEFAULT_LUMINANCE = 0
-    private val _luminance : MutableStateFlow<Int> = MutableStateFlow(DEFAULT_LUMINANCE)
-    val luminance : StateFlow<Int> = _luminance
-
-    private val DEFAULT_MONOCHROME = false
-    private val _isMonochrome : MutableStateFlow<Boolean> = MutableStateFlow(DEFAULT_MONOCHROME)
-    val isMonochrome : StateFlow<Boolean> = _isMonochrome
-
     init {
-        getImage()
+        setUpImage()
     }
 
-    private fun getImage() = viewModelScope.launch {
+    private fun setUpImage() = viewModelScope.launch(Dispatchers.IO) {
         val image = repository.getImage()
+
+        val settings = repository.getSettings()
 
         withContext(Dispatchers.Main) {
             original = image
             _tracingBitmap.update {
                 image
             }
+            _editSettings.update {
+                settings
+            }
+            edit()
         }
     }
 
@@ -117,7 +88,7 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun resetOffset() {
-        setOffset(DEFAULT_OFFSET)
+        setOffset(Offset(DEFAULT_OFFSET_X, DEFAULT_OFFSET_Y))
     }
 
     fun setEnablePinchToZoom(enablePinchToZoom : Boolean) {
@@ -127,12 +98,12 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun resetEnablePinchToZoom() {
-        setEnablePinchToZoom(DEFAULT_ENDABLE_PINCH_TO_ZOOM)
+        setEnablePinchToZoom(DEFAULT_ENABLE_PINCH_TO_ZOOM)
     }
 
     fun setInvert(invert : Boolean) {
-        _invert.update {
-            invert
+        _editSettings.update {
+            it.copy(invert = invert)
         }
     }
 
@@ -141,8 +112,8 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun setRed(red : Int) {
-        _red.update {
-            red
+        _editSettings.update {
+            it.copy(red = red)
         }
     }
 
@@ -151,8 +122,8 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun setGreen(green : Int) {
-        _green.update {
-            green
+        _editSettings.update {
+            it.copy(green = green)
         }
     }
 
@@ -161,8 +132,8 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun setBlue(blue : Int) {
-        _blue.update {
-            blue
+        _editSettings.update {
+            it.copy(blue = blue)
         }
     }
 
@@ -171,8 +142,8 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun setTransparency(transparency : Int) {
-        _transparency.update {
-            transparency
+        _editSettings.update {
+            it.copy(transparency = transparency)
         }
     }
 
@@ -181,8 +152,8 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun setContrast(contrast: Int) {
-        _contrast.update {
-            contrast
+        _editSettings.update {
+            it.copy(contrast = contrast)
         }
     }
 
@@ -191,8 +162,8 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun setBrightness(brightness : Int) {
-        _brightness.update {
-            brightness
+        _editSettings.update {
+            it.copy(brightness = brightness)
         }
     }
 
@@ -201,8 +172,8 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun setLuminance(luminance : Int) {
-        _luminance.update {
-            luminance
+        _editSettings.update {
+            it.copy(luminance = luminance)
         }
     }
 
@@ -211,8 +182,8 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     }
 
     fun setMonochrome(isMonochrome : Boolean) {
-        _isMonochrome.update {
-            isMonochrome
+        _editSettings.update {
+            it.copy(isMonochrome = isMonochrome)
         }
     }
 
@@ -241,19 +212,7 @@ class ImageTracingBottomBarViewModel @Inject constructor(
     fun edit() {
         original?.let {
             viewModelScope.launch(Dispatchers.Default) {
-                val settings = EditImageSettings(
-                    _transparency.value,
-                    _invert.value,
-                    _red.value,
-                    _green.value,
-                    _blue.value,
-                    _contrast.value,
-                    _brightness.value,
-                    _luminance.value,
-                    _isMonochrome.value
-                )
-
-                val edited = repository.editImage(it, settings)
+                val edited = repository.editImage(it, _editSettings.value)
 
                 withContext(Dispatchers.Main) {
                     _tracingBitmap.update {

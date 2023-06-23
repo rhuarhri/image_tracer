@@ -6,10 +6,12 @@ import com.rhuarhri.imagetracer.database.ImageEntity
 import java.util.Date
 import javax.inject.Inject
 
-class ImageSelectionRepository @Inject constructor(private val dao : ImageDao) {
+class ImageSelectionRepository @Inject constructor(
+    private val dao : ImageDao
+    ) : ImageSelectionRepositoryInterface {
 
     @WorkerThread
-    suspend fun saveImage(image : ByteArray) {
+    override suspend fun saveImage(image : ByteArray) {
         dao.addImage(ImageEntity(
             created = Date().time,
             data = image
@@ -17,7 +19,16 @@ class ImageSelectionRepository @Inject constructor(private val dao : ImageDao) {
     }
 
     @WorkerThread
-    suspend fun delete() {
+    override suspend fun delete() {
         dao.deleteUnnecessaryImages()
     }
+}
+
+interface ImageSelectionRepositoryInterface {
+
+    @WorkerThread
+    suspend fun saveImage(image : ByteArray)
+
+    @WorkerThread
+    suspend fun delete()
 }

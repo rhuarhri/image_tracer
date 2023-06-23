@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="image_selection_bar_storage_item_button_title">Open device storage</string>
+    <string name="image_selection_bar_storage_item_button_title">Open Gallery</string>
     <string name="image_selection_bar_camera_item_button_title">Open Camera</string>
 
     <string name="image_selection_bar_internet_item_search_title">Search</string>

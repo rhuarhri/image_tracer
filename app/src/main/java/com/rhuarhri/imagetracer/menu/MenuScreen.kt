@@ -47,9 +47,9 @@ import androidx.navigation.NavController
 import com.rhuarhri.imagetracer.R
 import com.rhuarhri.imagetracer.navigation.Route
 import com.rhuarhri.imagetracer.popups.WarningPopup
-import com.rhuarhri.imagetracer.popups.ad.FullScreenAdPopup
 import com.rhuarhri.imagetracer.popups.general.TracingChoicePopup
 import com.rhuarhri.imagetracer.ui.theme.ImageTracerTheme
+import com.rhuarhri.imagetracer.utils.AdUtils
 import com.rhuarhri.imagetracer.utils.ImageUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -255,43 +255,30 @@ class MenuScreen {
                 ) {
                     val context = LocalContext.current
 
-                    var showNoConnectionWarningPopup by remember {
+                    var showAdErrorWarningPopup by remember {
                         mutableStateOf(false)
                     }
 
-                    if (showNoConnectionWarningPopup) {
+                    if (showAdErrorWarningPopup) {
                         WarningPopup(
                             title =
-                            stringResource(id = R.string.no_connection_warning_popup_title),
+                            stringResource(id = R.string.on_ad_error_popup_title),
                             message =
-                            stringResource(id = R.string.no_connection_warning_popup_message)
+                            stringResource(id = R.string.on_ad_error_popup_message),
                         ) {
-                            showNoConnectionWarningPopup = false
-                        }
-                    }
-
-                    var showFullScreenAd by remember {
-                        mutableStateOf(false)
-                    }
-
-                    if (showFullScreenAd) {
-                        FullScreenAdPopup {
-                            showFullScreenAd = false
+                            showAdErrorWarningPopup = false
                         }
                     }
 
                     Button(onClick = {
-                        /*This checks if the user has a connection to the internet to ensure that
-                         they can watch an ad.
-                         */
-                        val connection = viewModel.checkConnection(context)
-
-                        if (connection) {
-                            showFullScreenAd = true
+                        AdUtils.showFullScreenAd(context,
+                            onDismiss = {
                             viewModel.resetAdCount()
-                        } else {
-                            showNoConnectionWarningPopup = true
-                        }
+                        },
+                            onError = {
+                                showAdErrorWarningPopup = true
+                            }
+                        )
                     }) {
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
@@ -321,7 +308,7 @@ class MenuScreen {
                 .height(100.dp)
                 .padding(8.dp)
         ) {
-            Text("Banner ad here")
+            AdUtils.BannerAd()
         }
     }
 

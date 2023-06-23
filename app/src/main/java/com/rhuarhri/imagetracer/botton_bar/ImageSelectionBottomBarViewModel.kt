@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ImageSelectionBottomBarViewModel @Inject constructor(
-    private val repository : ImageSelectionBottomBarRepository
+    private val repository : ImageSelectionBottomBarRepositoryInterface
     ) : BottomBarViewModel() {
 
     private val _selectedBitmap : MutableStateFlow<Bitmap?> = MutableStateFlow(null)
@@ -47,10 +47,15 @@ class ImageSelectionBottomBarViewModel @Inject constructor(
     fun getFromInternet(url : String) {
         //examole url = "https://cdn.mos.cms.futurecdn.net/BX7vjSt8KMtcBHyisvcSPK.jpg"
         viewModelScope.launch(Dispatchers.IO) {
-            val result = repository.getImageFromUrl(url)
+            var error : String? = null
+            val bitmap = try {
+                repository.getImageFromUrl(url)
+            } catch (e : Exception) {
+                error = e.message
+                null
+            }
 
             withContext(Dispatchers.Main) {
-                val bitmap = result.first
                 bitmap?.let {
                     _selectedBitmap.update {
                         bitmap
@@ -58,7 +63,7 @@ class ImageSelectionBottomBarViewModel @Inject constructor(
                 }
 
                 //the error
-                result.second?.let {
+                error?.let {
                     _showInternetError.update {
                         true
                     }

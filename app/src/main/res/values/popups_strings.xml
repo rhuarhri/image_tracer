@@ -12,6 +12,9 @@
         through the paper. \nCamera. In this option the image is on top of the view from the
         device’s camera. The camera view will allow you to see the paper with the image on top when using the app.
     </string>
+
+    <string name="tracing_choice_popup_screen_choice">Screen</string>
+    <string name="tracing_choice_popup_camera_choice">Camera</string>
     
     <string name="tracing_choice_no_permission_warning_title">Permission denied</string>
     <string name="tracing_choice_no_permission_warning_message">The app requires access to

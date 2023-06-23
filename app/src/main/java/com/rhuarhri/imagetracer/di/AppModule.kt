@@ -3,14 +3,17 @@ package com.rhuarhri.imagetracer.di
 import android.content.Context
 import androidx.room.Room
 import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBarRepository
+import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBarRepositoryInterface
 import com.rhuarhri.imagetracer.botton_bar.ImageTracingBottomBarRepository
-import com.rhuarhri.imagetracer.cameratrace.CameraTraceRepository
+import com.rhuarhri.imagetracer.botton_bar.ImageTracingBottomBarRepositoryInterface
 import com.rhuarhri.imagetracer.database.AdDao
 import com.rhuarhri.imagetracer.database.AppDatabase
+import com.rhuarhri.imagetracer.database.EditingSettingsDao
 import com.rhuarhri.imagetracer.database.ImageDao
 import com.rhuarhri.imagetracer.image_selection.ImageSelectionRepository
-import com.rhuarhri.imagetracer.lightbox.LightBoxRepository
+import com.rhuarhri.imagetracer.image_selection.ImageSelectionRepositoryInterface
 import com.rhuarhri.imagetracer.menu.MenuRepository
+import com.rhuarhri.imagetracer.menu.MenuRepositoryInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,37 +51,33 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideImageSelectionRepository(imageDao : ImageDao) : ImageSelectionRepository {
+    fun provideEditingSettingsDao(database: AppDatabase) : EditingSettingsDao {
+        return database.editingSettingsDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageSelectionRepository(imageDao : ImageDao) : ImageSelectionRepositoryInterface {
         return ImageSelectionRepository(imageDao)
     }
 
     @Provides
     @Singleton
-    fun provideCameraTraceRepository(imageDao: ImageDao) : CameraTraceRepository {
-        return CameraTraceRepository(imageDao)
-    }
-
-    @Provides
-    @Singleton
-    fun provideLightBox(imageDao: ImageDao) : LightBoxRepository {
-        return LightBoxRepository(imageDao)
-    }
-
-    @Provides
-    @Singleton
-    fun provideImageSelectionBottomBarRepository(imageDao: ImageDao) : ImageSelectionBottomBarRepository {
+    fun provideImageSelectionBottomBarRepository(imageDao: ImageDao) :
+            ImageSelectionBottomBarRepositoryInterface {
         return ImageSelectionBottomBarRepository(imageDao)
     }
 
     @Provides
     @Singleton
-    fun provideImageTracingBottomBarRepository(imageDao: ImageDao) : ImageTracingBottomBarRepository {
-        return ImageTracingBottomBarRepository(imageDao)
+    fun provideImageTracingBottomBarRepository(imageDao: ImageDao, editingSettingsDao: EditingSettingsDao) :
+            ImageTracingBottomBarRepositoryInterface {
+        return ImageTracingBottomBarRepository(imageDao, editingSettingsDao)
     }
 
     @Provides
     @Singleton
-    fun provideMenuRepository(adDao: AdDao, imageDao: ImageDao) : MenuRepository {
+    fun provideMenuRepository(adDao: AdDao, imageDao: ImageDao) : MenuRepositoryInterface {
         return MenuRepository(adDao, imageDao)
     }
 }

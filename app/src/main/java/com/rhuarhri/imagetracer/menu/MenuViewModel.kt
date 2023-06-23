@@ -1,9 +1,7 @@
 package com.rhuarhri.imagetracer.menu
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rhuarhri.imagetracer.utils.NetworkUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MenuViewModel @Inject constructor(private val repository: MenuRepository) : ViewModel() {
+class MenuViewModel @Inject constructor(private val repository: MenuRepositoryInterface) : ViewModel() {
 
     val adCount : StateFlow<List<Int>> = repository.adCount.stateIn(
         initialValue = listOf(0),
@@ -54,9 +52,5 @@ class MenuViewModel @Inject constructor(private val repository: MenuRepository) 
         //this checks if the user is allowed to trace an image
         //or they have to watch an ad
         return getCount() < 5
-    }
-
-    fun checkConnection(context: Context): Boolean {
-        return NetworkUtils.checkConnection(context)
     }
 }
