@@ -9,5 +9,6 @@ data class ImageEntity(
     @PrimaryKey(autoGenerate = true)
     val id : Int = 0,
     @ColumnInfo(name = "created") val created : Long = 0,
-    @ColumnInfo(name = "data", typeAffinity = ColumnInfo.BLOB)
-    val data : ByteArray)
+    //@ColumnInfo(name = "data", typeAffinity = ColumnInfo.BLOB)
+    @ColumnInfo(name = "data")
+    val data : String)

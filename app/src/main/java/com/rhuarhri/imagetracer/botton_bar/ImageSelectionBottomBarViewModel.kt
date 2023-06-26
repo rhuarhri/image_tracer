@@ -78,7 +78,7 @@ class ImageSelectionBottomBarViewModel @Inject constructor(
         }
     }
 
-    val imageHistory : StateFlow<List<Bitmap>> = repository.getHistory().stateIn(
+    val imageHistory : StateFlow<List<String>> = repository.getHistory().stateIn(
         initialValue = emptyList(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000)

@@ -1,6 +1,7 @@
 package com.rhuarhri.imagetracer.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -25,8 +26,11 @@ interface ImageDao {
 
     /*This will delete an image that is older than the youngest 10 images.
     * This ensures that the app is not full of images that the user doe not need.*/
-    @Query("DELETE FROM image_table WHERE id NOT IN(" +
+    @Query("SELECT * FROM image_table WHERE id NOT IN(" +
             "SELECT id FROM image_table ORDER BY created DESC LIMIT 10" +
             ")")
-    suspend fun deleteUnnecessaryImages()
+    suspend fun unnecessaryImages() : List<ImageEntity>
+
+    @Delete
+    suspend fun deleteImage(imageEntity: ImageEntity)
 }

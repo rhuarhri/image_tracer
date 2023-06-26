@@ -1,7 +1,6 @@
 package com.rhuarhri.imagetracer.botton_bar
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
@@ -10,6 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.rhuarhri.imagetracer.database.EditingSettingsDao
 import com.rhuarhri.imagetracer.database.ImageDao
+import com.rhuarhri.imagetracer.utils.ImageUtils
+import java.net.URI
 import javax.inject.Inject
 
 const val DEFAULT_SCALE : Float = 1f
@@ -75,14 +76,24 @@ class ImageTracingBottomBarRepository @Inject constructor(
         )
     }
 
-    override suspend fun getImage(): Bitmap {
+    override suspend fun getImage(): Bitmap? {
         val imageData = imageDao.getImage().first()
-        val imageBytes = imageData.data
 
         //update settings if there are no settings fro this image
         editImageSettingsDao.checkAndUpdateSettings(imageData.id)
 
-        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        val bitmap = ImageUtils.getImageFromFile(imageData.data)
+
+        if (bitmap == null) {
+            /*
+            If the bitmap is null then the either does not exist or the file is not an
+            image. So the file and teh image entity should be deleted.
+             */
+
+            imageDao.deleteImage(imageData)
+        }
+
+        return bitmap
     }
 
     override suspend fun editImage(
@@ -299,7 +310,7 @@ interface ImageTracingBottomBarRepositoryInterface {
 
     suspend fun getSettings() : EditImageSettings
 
-    suspend fun getImage(): Bitmap
+    suspend fun getImage(): Bitmap?
 
     suspend fun editImage(
         origin : Bitmap,

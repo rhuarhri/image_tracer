@@ -133,10 +133,10 @@ class AppDatabaseTest {
         * */
 
         //old image
-        imageDao.addImage(ImageEntity(created = 1, data = byteArrayOf()))
+        imageDao.addImage(ImageEntity(created = 1, data = "test"))
 
         //young image
-        imageDao.addImage(ImageEntity(created = 2, data = byteArrayOf()))
+        imageDao.addImage(ImageEntity(created = 2, data = "test"))
 
         val images = imageDao.getImage()
 
@@ -150,17 +150,17 @@ class AppDatabaseTest {
     }
 
     private fun setDefaultImages() = runBlocking {
-        imageDao.addImage(ImageEntity(created = 1, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 2, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 3, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 4, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 5, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 6, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 7, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 8, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 9, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 10, data = byteArrayOf()))
-        imageDao.addImage(ImageEntity(created = 11, data = byteArrayOf()))
+        imageDao.addImage(ImageEntity(created = 1, data = "test"))
+        imageDao.addImage(ImageEntity(created = 2, data = "test"))
+        imageDao.addImage(ImageEntity(created = 3, data = "test"))
+        imageDao.addImage(ImageEntity(created = 4, data = "test"))
+        imageDao.addImage(ImageEntity(created = 5, data = "test"))
+        imageDao.addImage(ImageEntity(created = 6, data = "test"))
+        imageDao.addImage(ImageEntity(created = 7, data = "test"))
+        imageDao.addImage(ImageEntity(created = 8, data = "test"))
+        imageDao.addImage(ImageEntity(created = 9, data = "test"))
+        imageDao.addImage(ImageEntity(created = 10, data = "test"))
+        imageDao.addImage(ImageEntity(created = 11, data = "test"))
     }
 
     @Test
@@ -198,7 +198,9 @@ class AppDatabaseTest {
         //This creates 11 images
         setDefaultImages()
 
-        imageDao.deleteUnnecessaryImages()
+        imageDao.unnecessaryImages().forEach {
+            imageDao.deleteImage(it)
+        }
 
         val images = testDao.getAllImages()
 

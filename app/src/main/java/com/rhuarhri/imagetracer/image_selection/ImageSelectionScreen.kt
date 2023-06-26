@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -28,6 +29,7 @@ import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBar
 import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBarViewModel
 import com.rhuarhri.imagetracer.common_ui.ScreenToolBar
 import com.rhuarhri.imagetracer.navigation.Route
+import com.rhuarhri.imagetracer.popups.LoadingPopup
 import com.rhuarhri.imagetracer.popups.WarningPopup
 import com.rhuarhri.imagetracer.popups.general.TracingChoicePopup
 import com.rhuarhri.imagetracer.ui.theme.ImageTracerTheme
@@ -105,13 +107,25 @@ class ImageSelectionScreen {
                                 showNoImageSelectedWarning = false
                             }
                         }
-                        
+
+                        var showLoadingPopup by remember {
+                            mutableStateOf(false)
+                        }
+
+                        if (showLoadingPopup) {
+                            LoadingPopup(stringResource(id = R.string.loading_popup_content))
+                        }
+
+                        val context = LocalContext.current
                         FloatingActionButton(onClick = {
                             if (selectedImage != null) {
                                 selectedImage?.let {
+                                    showLoadingPopup = true
                                     viewModel.saveImage(
-                                        it
+                                        it,
+                                        context
                                     ).invokeOnCompletion {
+                                        showLoadingPopup = false
                                         showTracingChoicePopup = true
                                     }
                                 }

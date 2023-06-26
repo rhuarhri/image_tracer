@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.net.URL
 import javax.inject.Inject
 import kotlin.jvm.Throws
@@ -36,14 +37,18 @@ class ImageSelectionBottomBarRepository @Inject constructor(
         }
     }
 
-    override fun getHistory() : Flow<List<Bitmap>> {
+    override fun getHistory() : Flow<List<String>> {
         /*All the images are stored as byte arrays. As a result they are converted into bitmaps
         here.
          */
         return imageDao.getImageHistory().map { entities ->
             entities.mapNotNull { image ->
-                val imageBytes = image.data
-                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                if (File(image.data).exists()) {
+                    image.data
+                } else {
+                    imageDao.deleteImage(image)
+                    null
+                }
             }
         }
     }
@@ -57,5 +62,5 @@ interface ImageSelectionBottomBarRepositoryInterface {
     @Throws(Exception::class)
     suspend fun getImageFromUrl(url: String) : Bitmap?
 
-    fun getHistory() : Flow<List<Bitmap>>
+    fun getHistory() : Flow<List<String>>
 }

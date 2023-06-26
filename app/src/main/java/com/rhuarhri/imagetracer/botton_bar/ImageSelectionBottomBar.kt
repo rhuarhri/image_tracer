@@ -327,17 +327,23 @@ object ImageSelectionBottomBar {
         ) {
             val historyImages by viewModel.imageHistory.collectAsState()
             LazyRow(modifier = Modifier.weight(1f, fill = true)) {
-                items(historyImages) {bitmap ->
+                items(historyImages) {filePath ->
 
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = "Selected image",
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .clickable {
-                                viewModel.setSelectedBitmap(bitmap)
-                            }
-                    )
+                    val thumbNail = ImageUtils.getThumbNail(filePath)
+
+                    thumbNail?.let {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = "Selected image",
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .clickable {
+                                    ImageUtils.getImageFromFile(filePath)?.let { bitmap ->
+                                        viewModel.setSelectedBitmap(bitmap)
+                                    }
+                                }
+                        )
+                    }
 
                 }
             }
