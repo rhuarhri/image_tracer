@@ -1,5 +1,6 @@
 package com.rhuarhri.imagetracer.menu
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.rhuarhri.imagetracer.R
 import com.rhuarhri.imagetracer.navigation.Route
+import com.rhuarhri.imagetracer.popups.LoadingPopup
 import com.rhuarhri.imagetracer.popups.WarningPopup
 import com.rhuarhri.imagetracer.popups.general.TracingChoicePopup
 import com.rhuarhri.imagetracer.ui.theme.ImageTracerTheme
@@ -57,6 +60,8 @@ class MenuScreen {
 
     @Composable
     fun Screen(navController: NavController) {
+
+        val config = LocalConfiguration.current
 
         ImageTracerTheme {
             // A surface container using the 'background' color from the theme
@@ -79,21 +84,23 @@ class MenuScreen {
                                     horizontalArrangement = Arrangement.Center
                                 ) {
 
-                                    val icon =
-                                        ImageUtils.assetFileToBitmap(
-                                            LocalContext.current,
-                                            "app_icon.png"
-                                        )
-                                    icon?.let { bitmap ->
-                                        Image(
-                                            bitmap = bitmap.asImageBitmap(),
-                                            contentDescription = "App icon",
-                                            modifier = Modifier
-                                                .size(80.dp)
-                                                .clip(RoundedCornerShape(16.dp))
-                                                .background(MaterialTheme.colorScheme.primary),
-                                            contentScale = ContentScale.Fit
-                                        )
+                                    if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                                        val icon =
+                                            ImageUtils.assetFileToBitmap(
+                                                LocalContext.current,
+                                                "app_icon.png"
+                                            )
+                                        icon?.let { bitmap ->
+                                            Image(
+                                                bitmap = bitmap.asImageBitmap(),
+                                                contentDescription = "App icon",
+                                                modifier = Modifier
+                                                    .size(80.dp)
+                                                    .clip(RoundedCornerShape(16.dp))
+                                                    .background(MaterialTheme.colorScheme.primary),
+                                                contentScale = ContentScale.Fit
+                                            )
+                                        }
                                     }
                                 }
                                 Row(
@@ -111,7 +118,9 @@ class MenuScreen {
                         }
                     },
                     bottomBar = {
-                        BannerAd()
+                        if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            BannerAd()
+                        }
                     }
                 )
             }
@@ -219,6 +228,8 @@ class MenuScreen {
             adCountList.first()
         }
 
+        val config = LocalConfiguration.current
+
         Card(
             modifier = Modifier
                 .padding(16.dp)
@@ -237,15 +248,17 @@ class MenuScreen {
                     fontSize = 24.sp,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.size(8.dp))
-                Text(
-                    stringResource(id = R.string.ad_card_message),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
+                if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text(
+                        stringResource(id = R.string.ad_card_message),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Spacer(modifier = Modifier.size(8.dp))
                 Row(
                     modifier = Modifier
@@ -270,12 +283,23 @@ class MenuScreen {
                         }
                     }
 
+                    var showLoadingPopup by remember {
+                        mutableStateOf(false)
+                    }
+
+                    if (showLoadingPopup) {
+                        LoadingPopup(loadingMessage = stringResource(id = R.string.loading_ad_popup_content))
+                    }
+
                     Button(onClick = {
+                        showLoadingPopup = true
                         AdUtils.showFullScreenAd(context,
                             onDismiss = {
-                            viewModel.resetAdCount()
-                        },
+                                showLoadingPopup = false
+                                viewModel.resetAdCount()
+                            },
                             onError = {
+                                showLoadingPopup = false
                                 showAdErrorWarningPopup = true
                             }
                         )

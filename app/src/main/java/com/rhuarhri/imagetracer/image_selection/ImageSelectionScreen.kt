@@ -27,7 +27,6 @@ import androidx.navigation.NavController
 import com.rhuarhri.imagetracer.R
 import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBar
 import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBarViewModel
-import com.rhuarhri.imagetracer.common_ui.ScreenToolBar
 import com.rhuarhri.imagetracer.navigation.Route
 import com.rhuarhri.imagetracer.popups.LoadingPopup
 import com.rhuarhri.imagetracer.popups.WarningPopup
@@ -52,9 +51,6 @@ class ImageSelectionScreen {
                 color = MaterialTheme.colorScheme.background
             ) {
                 Scaffold(
-                    topBar = {
-                        ScreenToolBar(stringResource(id = R.string.image_selection_tool_bar_name), navController)
-                    },
                     content = { it ->
                         Box(modifier = Modifier
                             .fillMaxSize()

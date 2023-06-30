@@ -10,6 +10,7 @@ val SAMPLE_IMAGES = arrayOf(
     "cheater_face.png",
     "chicken.png",
     "crab.png",
+    "dog.png",
     "frog.png",
     "lady_bug.png",
     "lion_face.png",

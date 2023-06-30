@@ -5,6 +5,7 @@
 
     <string name="loading_popup_title">Loading</string>
     <string name="loading_popup_content">Loading image please wait.</string>
+    <string name="loading_ad_popup_content">Loading ad please wait.</string>
 
     <string name="tracing_choice_popup_title">Trace Image with?</string>
 

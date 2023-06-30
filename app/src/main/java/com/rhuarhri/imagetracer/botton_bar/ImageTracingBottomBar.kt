@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Undo
@@ -209,7 +210,7 @@ class ImageTracingBottomBar {
         val settings by viewModel.editSettings.collectAsState()
 
         ImageTracingExtensionBody(
-            height = 350.dp,
+            height = 220.dp,
             onReset = {
                 viewModel.resetRed()
                 viewModel.resetGreen()
@@ -296,7 +297,7 @@ class ImageTracingBottomBar {
         val settings by viewModel.editSettings.collectAsState()
 
         ImageTracingExtensionBody(
-            height = 250.dp,
+            height = 180.dp,
             onReset = {
                 viewModel.resetContrast()
                 viewModel.resetBrightness()
@@ -404,14 +405,17 @@ class ImageTracingBottomBar {
         onValueChanged : (value : Int) -> Unit,
         onChangeFinished : () -> Unit
     ) {
-        Column(modifier = Modifier
+        Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)) {
+            .padding(2.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                stringResource(id = R.string.image_tracing_bar_bar_slider_title, title, value),
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 24.sp
+                title,
+                modifier = Modifier.wrapContentWidth(),
+                fontSize = 20.sp
             )
+            Spacer(Modifier.width(8.dp))
             Slider(
                 value = value.toFloat(),
                 onValueChange = {
