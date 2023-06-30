@@ -44,7 +44,7 @@ class ImageSelectionBottomBarViewModel @Inject constructor(
         }
     }
 
-    fun getFromInternet(url : String) {
+    fun getFromInternet(url : String) =
         //examole url = "https://cdn.mos.cms.futurecdn.net/BX7vjSt8KMtcBHyisvcSPK.jpg"
         viewModelScope.launch(Dispatchers.IO) {
             var error : String? = null
@@ -70,7 +70,6 @@ class ImageSelectionBottomBarViewModel @Inject constructor(
                 }
             }
         }
-    }
 
     fun seenError() {
         _showInternetError.update {

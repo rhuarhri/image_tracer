@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.rhuarhri.imagetracer.R
+import com.rhuarhri.imagetracer.popups.LoadingPopup
 import com.rhuarhri.imagetracer.popups.WarningPopup
 import com.rhuarhri.imagetracer.utils.ImageUtils
 import com.rhuarhri.imagetracer.values.SAMPLE_IMAGES
@@ -246,8 +247,20 @@ object ImageSelectionBottomBar {
                     Text(stringResource(id = R.string.image_selection_bar_internet_item_search_title))
                 }
             )
+
+            var showLoadingPopup by remember {
+                mutableStateOf(false)
+            }
+
+            if (showLoadingPopup) {
+                LoadingPopup(loadingMessage = stringResource(id = R.string.loading_popup_content))
+            }
+
             IconButton(onClick = {
-                viewModel.getFromInternet(url)
+                showLoadingPopup = true
+                viewModel.getFromInternet(url).invokeOnCompletion {
+                    showLoadingPopup = false
+                }
             }) {
                 Icon(
                     imageVector = Icons.Default.Search, contentDescription = "Search",
@@ -338,9 +351,11 @@ object ImageSelectionBottomBar {
                             modifier = Modifier
                                 .padding(16.dp)
                                 .clickable {
-                                    ImageUtils.getImageFromFile(filePath)?.let { bitmap ->
-                                        viewModel.setSelectedBitmap(bitmap)
-                                    }
+                                    ImageUtils
+                                        .getImageFromFile(filePath)
+                                        ?.let { bitmap ->
+                                            viewModel.setSelectedBitmap(bitmap)
+                                        }
                                 }
                         )
                     }
