@@ -30,12 +30,48 @@
     <string name="image_tracing_resize_option">Resize</string>
     <string name="image_tracing_resize_help">When the resize, switch is pressed. It will enable or disable the gestures for rotation, resizing and movement. If the switch is on these gestures are enabled. If the switch is off the image is locked in place.</string>
 
+    <string name="image_tracing_flip_option">Flip</string>
+    <string name="image_tracing_flip_help">
+        When one of the flip options is pressed the image is flipped on that axis.
+        \nThe x axis option will make everything on the left swap with everything on the right.
+        \nThe y axis option will make everything on the top swap with everything on the bottom.
+        \nThe both option applies both the x axis and the y axis to the image.
+        \nThis is useful when positioning the image.
+    </string>
+
+    <string name="image_tracing_edge_detection_option">Edge detection</string>
+    <string name="image_tracing_edge_detection_help">
+        Edge detection will find edges of objects in the image.
+        \nThe Low option will find only the most prominent edges.
+        \nThe High option will most of the edges in the image.
+        \nThis is useful for focusing on the edges when drawing.
+    </string>
+
+    <string name="image_tracing_image_segmentation_option">Split image</string>
+    <string name="image_tracing_image_segmentation_help">Split image will cut out objects from the
+        background. Hiding the background and leaving the objects.
+        This is useful for focusing on the objects within an image.
+    </string>
+
     <string name="image_tracing_invert_option">Invert</string>
     <string name="image_tracing_invert_help">When the invert colour button is pressed. It will switch the colours in the image to their opposite. For example, white becomes black. This would help make it easier to identify different colours.</string>
 
     <string name="image_tracing_colour_option">Colour</string>
     <string name="image_tracing_colour_help">When one of the colour bars is moved. Some of the
         colours will be removed. For example, if all bars are at 0 then all colours apart from black will be removed. This would help by allowing you to draw the image one colour at a time.</string>
+
+    <string name="image_tracing_colour_merge_option">Colour merge</string>
+    <string name="image_tracing_colour_merge_help">Colour merge will blend the colours of the image
+        together. This simplifies the image into its most prominent colours.</string>
+
+    <string name="image_tracing_blur_option">Blur</string>
+    <string name="image_tracing_blur_help">Blur this will blur the image. This is useful to hide
+        complex parts of the image and highlight prominent parts of the image.</string>
+
+    <string name="image_tracing_colour_overlay_option">Colour Overlay</string>
+    <string name="image_tracing_colour_overlay_help">Colour overlay will colour the entire image in
+        the selected option. If two colours are hard to tell apart from each other having an
+        overlay might help.</string>
 
     <string name="image_tracing_transparency_option">Transparency</string>
     <string name="image_tracing_transparency_help">When the transparency bar is moved. The image will fade into the background. If the bar is at 100 then the image will be completely visible, at 0 then the image will be invisible. This would help when tracing with the camera as you will be able to see what you are drawing through the image.</string>
@@ -48,5 +84,10 @@
 
     <string name="image_tracing_monochrome_option">Monochrome</string>
     <string name="image_tracing_monochrome_help">When the monochrome button is pressed. All colour from the image is removed and replace with either black or white. This would help to make the image easier to view.</string>
+
+    <string name="image_tracing_black_and_white_option">Black and white</string>
+    <string name="image_tracing_black_and_white_help">Black and white will replace all colours in
+        the selected image with either black or white. This is useful for focusing on the shapes
+        that make up the image instead of the colours in the image.</string>
 
 </resources>

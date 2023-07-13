@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="none_type">None</string>
+    <string name="low_type">Low</string>
+    <string name="medium_type">Medium</string>
+    <string name="high_type">High</string>
+
+    <string name="flip_x_axis">X axis</string>
+    <string name="flip_y_axis">Y axis</string>
+    <string name="flip_x_y_axis">Both</string>
+
+    <string name="colour_overlay_red">Red</string>
+    <string name="colour_overlay_green">Green</string>
+    <string name="colour_overlay_blue">Blue</string>
+
+</resources>

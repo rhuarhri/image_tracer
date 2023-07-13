@@ -25,8 +25,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.rhuarhri.imagetracer.R
-import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBar
-import com.rhuarhri.imagetracer.botton_bar.ImageSelectionBottomBarViewModel
+import com.rhuarhri.imagetracer.botton_bar.BottomBar
+import com.rhuarhri.imagetracer.botton_bar.BottomBarViewModel
+import com.rhuarhri.imagetracer.botton_bar.widgets.image_selection.CameraWidget
+import com.rhuarhri.imagetracer.botton_bar.widgets.image_selection.HistoryWidget
+import com.rhuarhri.imagetracer.botton_bar.widgets.image_selection.InternetWidget
+import com.rhuarhri.imagetracer.botton_bar.widgets.image_selection.SampleWidget
+import com.rhuarhri.imagetracer.botton_bar.widgets.image_selection.StorageWidget
 import com.rhuarhri.imagetracer.navigation.Route
 import com.rhuarhri.imagetracer.popups.LoadingPopup
 import com.rhuarhri.imagetracer.popups.WarningPopup
@@ -41,8 +46,9 @@ class ImageSelectionScreen {
 
         val viewModel : ImageSelectionViewModel = hiltViewModel()
 
-        val bottomBarViewModel : ImageSelectionBottomBarViewModel = hiltViewModel()
-        val selectedImage by bottomBarViewModel.selectedBitmap.collectAsState()
+        val bottomBarViewModel : BottomBarViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+
+        val selectedImage by viewModel.selectedBitmap.collectAsState()
 
         ImageTracerTheme {
             // A surface container using the 'background' color from the theme
@@ -51,7 +57,7 @@ class ImageSelectionScreen {
                 color = MaterialTheme.colorScheme.background
             ) {
                 Scaffold(
-                    content = { it ->
+                    content = {
                         Box(modifier = Modifier
                             .fillMaxSize()
                             .padding(it)) {
@@ -118,7 +124,6 @@ class ImageSelectionScreen {
                                 selectedImage?.let {
                                     showLoadingPopup = true
                                     viewModel.saveImage(
-                                        it,
                                         context
                                     ).invokeOnCompletion {
                                         showLoadingPopup = false
@@ -134,7 +139,80 @@ class ImageSelectionScreen {
                         }
                     },
                     bottomBar = {
-                        ImageSelectionBottomBar.Bar(viewModel = bottomBarViewModel)
+
+                        /*It is possible for errors to occur here. Mainly no internet or incorrect url
+                        so if there is a problem this warning is shown.
+                        */
+
+                        val internetError by viewModel.showInternetError.collectAsState()
+                        if (internetError) {
+                            WarningPopup(
+                                title = stringResource(id = R.string.image_selection_internet_error_title),
+                                message = stringResource(id = R.string.image_selection_internet_error_message)
+                            ) {
+                                viewModel.hideInternetError()
+                            }
+                        }
+
+                        val history by viewModel.history.collectAsState()
+                        BottomBar.Bar(viewModel = bottomBarViewModel, widgets = listOf(
+                            StorageWidget(
+                                set = { context, uri ->
+                                    viewModel.getFromStorage(context, uri)
+                                },
+                                reset = {
+
+                                },
+                                close = {
+                                    bottomBarViewModel.hideExtension()
+                                }
+                            ),
+                            CameraWidget(
+                                set = { context, uri ->
+                                    viewModel.getFromCamera(context, uri)
+                                },
+                                reset = {
+
+                                },
+                                close = {
+                                    bottomBarViewModel.hideExtension()
+                                }
+                            ),
+                            InternetWidget(
+                                set = {
+                                    viewModel.getFromInternet(it)
+                                },
+                                reset = {
+
+                                },
+                                close = {
+                                    bottomBarViewModel.hideExtension()
+                                }
+                            ),
+                            SampleWidget(
+                                set = {
+                                    viewModel.setSelectedBitmap(it)
+                                },
+                                reset = {
+
+                                },
+                                close = {
+                                    bottomBarViewModel.hideExtension()
+                                }
+                            ),
+                            HistoryWidget(
+                                historyImages = history,
+                                set = {
+                                    viewModel.setSelectedBitmap(it)
+                                },
+                                reset = {
+
+                                },
+                                close = {
+                                    bottomBarViewModel.hideExtension()
+                                }
+                            )
+                        ))
                     }
                 )
             }

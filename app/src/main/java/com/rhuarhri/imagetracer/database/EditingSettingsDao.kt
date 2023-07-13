@@ -21,26 +21,38 @@ interface EditingSettingsDao {
     }
 
     @Query("UPDATE settings_table SET " +
-            "invert = :invert, " +
+            "blackAndWhite = :blackAndWhite, " +
+            "blur = :blur, " +
+            "colourMerging = :colourMerging, " +
+            "colourOverlay = :colourOverlay, " +
             "red = :red, " +
             "green = :green, " +
             "blue = :blue, " +
-            "transparency = :transparency, " +
             "contrast = :contrast, " +
             "brightness = :brightness, " +
-            "luminance = :luminance, " +
-            "isMonochrome = :isMonochrome" +
+            "edgeDetection = :edgeDetection, " +
+            "flip = :flip, " +
+            "imageSegmentation = :imageSegmentation, " +
+            "invert = :invert, " +
+            "isMonochrome = :isMonochrome, " +
+            "transparency = :transparency" +
             " WHERE id = 0")
     suspend fun updateSettings(
-        invert : Boolean,
+        blackAndWhite : Boolean,
+        blur : Int,
+        colourMerging : Int,
+        colourOverlay : Int,
         red : Int,
         green : Int,
         blue : Int,
-        transparency : Int,
         contrast : Int,
         brightness : Int,
-        luminance : Int,
-        isMonochrome : Boolean
+        edgeDetection : Int,
+        flip : Int,
+        imageSegmentation : Boolean,
+        invert : Boolean,
+        isMonochrome : Boolean,
+        transparency : Int
     )
 
     @Query("SELECT EXISTS(SELECT * FROM settings_table WHERE imageId = :imageId)")

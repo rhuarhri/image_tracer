@@ -58,7 +58,11 @@ class MenuRepositoryTests {
                 }
             }
 
-            override suspend fun deleteUnnecessaryImages() {
+            override suspend fun unnecessaryImages(): List<ImageEntity> {
+                return emptyList()
+            }
+
+            override suspend fun deleteImage(imageEntity: ImageEntity) {
                 //do nothing
             }
 

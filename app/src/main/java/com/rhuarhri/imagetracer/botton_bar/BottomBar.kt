@@ -16,10 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.Undo
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,19 +34,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rhuarhri.imagetracer.R
+import com.rhuarhri.imagetracer.botton_bar.widgets.BottomBarWidget
 import com.rhuarhri.imagetracer.popups.HelpPopup
 
 object BottomBar {
 
     @Composable
-    fun Bar(viewModel: BottomBarViewModel, items: Array<BottomBarItem>,
-            extension : @Composable (item : BottomBarItem) -> Unit) {
+    fun Bar(
+        viewModel: BottomBarViewModel,
+        widgets : List<BottomBarWidget>
+    ) {
 
-        val isVisible by viewModel.isBarVisible.collectAsState()
-        val isExtensionVisible by viewModel.isExtensionVisible.collectAsState()
+        val visible by viewModel.isBarVisible.collectAsState()
         val selectedItem by viewModel.selectedItem.collectAsState()
 
-        if (isVisible) {
+        if (visible) {
             Box(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
@@ -60,7 +59,7 @@ object BottomBar {
                 Column {
 
                     /*The extension will be controls for that option*/
-                    AnimatedVisibility(visible = isExtensionVisible) {
+                    AnimatedVisibility(visible = (selectedItem != null)) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -115,7 +114,7 @@ object BottomBar {
                                     /*This is the extension. Since this is a general bottom bar
                                     the extension is passed in through the extension function.
                                      */
-                                    extension.invoke(it)
+                                    it.Extension()
                                 }
                             }
                         }
@@ -127,11 +126,10 @@ object BottomBar {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        this.items(items) {
-                            val selected = selectedItem == it
+                        this.items(widgets) {
+                            val selected = selectedItem?.title == it.title
 
                             Item(item = it, selected, onItemClicked = {
-                                viewModel.showExtension()
                                 viewModel.setSelectedItem(it)
                             })
                         }
@@ -143,8 +141,8 @@ object BottomBar {
     }
 
     @Composable
-    private fun Item(item : BottomBarItem, selected : Boolean,
-                     onItemClicked: (option: BottomBarItem) -> Unit) {
+    private fun Item(item : BottomBarWidget, selected : Boolean,
+                     onItemClicked: (option: BottomBarWidget) -> Unit) {
 
         var columnModifier = Modifier.clickable {
             onItemClicked.invoke(item)
@@ -173,33 +171,6 @@ object BottomBar {
                 stringResource(id = item.title),
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp)
-        }
-    }
-
-    @Composable
-    fun CloseExtensionButton(viewModel: BottomBarViewModel) {
-        Button(onClick = {
-            viewModel.hideExtension()
-        },
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = "Close",
-                modifier = Modifier.size(40.dp, 40.dp), tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
-    }
-
-    @Composable
-    fun RestButton(onReset : () -> Unit) {
-        /*This app allows you to edit as a result this is a general undo button to correct
-        mistakes.*/
-        Button(onClick = {
-            onReset.invoke()
-        },
-        modifier = Modifier.padding(8.dp)
-            ) {
-            Icon(imageVector = Icons.Default.Undo, contentDescription = "Undo",
-                modifier = Modifier.size(40.dp, 40.dp), tint = MaterialTheme.colorScheme.onPrimary)
         }
     }
 
