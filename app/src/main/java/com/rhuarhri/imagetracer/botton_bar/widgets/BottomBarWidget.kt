@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -131,8 +133,8 @@ abstract class BottomBarWidget (
     }
 
     @Composable
-    protected fun OptionSelection (items : List<String>, selected : Int, onSelection : (index : Int) -> Unit) {
-        Row(modifier = Modifier
+    protected fun OptionSelection (options : List<String>, selected : Int, onSelection : (index : Int) -> Unit) {
+        LazyRow(modifier = Modifier
             .fillMaxWidth()
             .padding(2.dp)
             .selectableGroup(),
@@ -140,7 +142,8 @@ abstract class BottomBarWidget (
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            items.forEachIndexed { index, item ->
+            items(options) {
+                val index = options.indexOf(it)
                 Row(modifier = Modifier.padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically) {
                     val isChecked = selected == index
@@ -152,7 +155,7 @@ abstract class BottomBarWidget (
                         },
                         enabled = true,
                     )
-                    Text(text = item)
+                    Text(text = it)
                 }
             }
         }

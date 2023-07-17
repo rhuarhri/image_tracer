@@ -31,7 +31,7 @@ class ColourMergingWidget (
     override fun Extension() {
 
         ImageTracingExtensionBody(
-            height = 140.dp) {
+            height = 200.dp) {
 
             Column(
                 modifier = Modifier.fillMaxWidth(),

@@ -144,6 +144,12 @@ class LightBoxScreen {
                                         Image(bitmap = it.asImageBitmap(), contentDescription = "Image being traced",
                                             modifier = Modifier
                                                 .fillMaxSize()
+                                                /*.pointerInput(Unit) {
+                                                    detectTapGestures { offset ->
+
+                                                    }
+                                                    detectDragGestures { change, dragAmount ->  }
+                                                }*/
                                                 .graphicsLayer(
                                                     scaleX = scale,
                                                     scaleY = scale,

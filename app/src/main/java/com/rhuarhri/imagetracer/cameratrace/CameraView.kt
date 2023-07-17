@@ -30,6 +30,22 @@ fun CameraDisplay() {
     }
 
     val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+    /*val imageAnalysis = ImageAnalysis.Builder()
+        .setImageQueueDepth(STRATEGY_KEEP_ONLY_LATEST).build()
+
+    imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor()) { image ->
+
+        val left = 0
+        val top = 0
+        val right = 0
+        val bottom = 0
+
+        val rect = Rect()
+
+        image.setCropRect(rect)
+
+        image.close()
+    }*/
 
     LaunchedEffect(lensFacing) {
         val cameraProvider = context.getCameraProvider()
