@@ -35,16 +35,22 @@ fun CameraDisplay() {
 
     imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor()) { image ->
 
-        val left = 0
-        val top = 0
-        val right = 0
-        val bottom = 0
+        /*if (previous != null) {
+            val currentMat = Mat()
+            Utils.bitmapToMat(image.toBitmap(), currentMat)
 
-        val rect = Rect()
+            val previousMat = Mat()
+            Utils.bitmapToMat(previous, previousMat)
 
-        image.setCropRect(rect)
+            //image.setCropRect(rect)
+        }*/
 
+        val bitmap : Bitmap = EditingUtils.createBlankBitmap(100, 100)
         image.close()
+
+        val drawable = BitmapDrawable(resources, bitmap)
+        previewView.overlay.clear()
+        previewView.overlay.add(drawable)
     }*/
 
     LaunchedEffect(lensFacing) {

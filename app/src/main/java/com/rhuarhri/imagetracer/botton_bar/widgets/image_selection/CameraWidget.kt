@@ -55,7 +55,8 @@ class CameraWidget (
     @Composable
     override fun Extension() {
         val context = LocalContext.current
-        val file = File.createTempFile("temp", ".png", context.externalCacheDir)
+        val file = File(context.externalCacheDir, "temp.png")
+
         val uri = FileProvider.getUriForFile(
             Objects.requireNonNull(context),
             context.packageName + ".provider", file
