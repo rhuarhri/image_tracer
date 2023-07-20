@@ -58,20 +58,20 @@ object EditingUtils {
                 android.graphics.Color.alpha(pixel)
             }
 
-            val newColour = Color(
-                rgb.first,
-                rgb.second,
-                rgb.third,
-                alpha
-            )
-
-            pixels[index] = newColour.toArgb()
+            pixels[index] = createColourInt(rgb.first, rgb.second, rgb.third, alpha)
         }
 
         val editedBitmap = createBlankBitmap(image.width, image.height)
         editedBitmap.setPixels(pixels, 0, image.width, 0, 0, image.width, image.height)
 
         return editedBitmap
+    }
+
+    fun createColourInt(red : Int, green : Int, blue : Int, alpha: Int) : Int {
+        val newColour = Color(
+            red, green, blue, alpha)
+
+        return newColour.toArgb()
     }
 
 }

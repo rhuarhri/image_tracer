@@ -50,15 +50,15 @@ class ColourRemover {
         Core.bitwise_and(imageMat, imageMat, withoutSelectedColor, invMask)
 
         //when added together they must be the same type
-        Imgproc.cvtColor(withSelectedColor, withSelectedColor, Imgproc.COLOR_HSV2RGB)
+        Imgproc.cvtColor(withSelectedColor, withSelectedColor, Imgproc.COLOR_HSV2BGR)
 
         //withoutSelectedColor is going to be in gray scale
         //step 1 convert from HSV as this type cannot be convert to gray scale
-        Imgproc.cvtColor(withoutSelectedColor, withoutSelectedColor, Imgproc.COLOR_HSV2RGB)
+        Imgproc.cvtColor(withoutSelectedColor, withoutSelectedColor, Imgproc.COLOR_HSV2BGR)
         //step 2 convert tp gray scale
-        Imgproc.cvtColor(withoutSelectedColor, withoutSelectedColor, Imgproc.COLOR_RGB2GRAY)
+        Imgproc.cvtColor(withoutSelectedColor, withoutSelectedColor, Imgproc.COLOR_BGR2GRAY)
         //step 3 convert to the same type as withSelectedColor so it can be added together
-        Imgproc.cvtColor(withoutSelectedColor, withoutSelectedColor, Imgproc.COLOR_GRAY2RGB)
+        Imgproc.cvtColor(withoutSelectedColor, withoutSelectedColor, Imgproc.COLOR_GRAY2BGR)
 
         val edited = Mat()
         Core.add(withSelectedColor, withoutSelectedColor, edited)
